@@ -17,6 +17,7 @@ return new class extends Migration
             $table -> dateTime('FechaCreacionDepartamento');
             $table -> float('VolumenDeNegocio');
             $table -> dateTime('FechaBajaDepartamento') -> nullable();
+            $table->timestamps(); // agrega created_at y updated_at
         });
     }
 
