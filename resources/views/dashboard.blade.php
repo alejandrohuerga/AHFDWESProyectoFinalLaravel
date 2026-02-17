@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            MANTENIMIENTO DEPARTAMENTOS
         </h2>
     </x-slot>
 
@@ -16,6 +16,7 @@
                             <th class="border border-gray-300 px-4 py-2">Fecha Alta</th>
                             <th class="border border-gray-300 px-4 py-2">Volumen Negocio</th>
                             <th class="border border-gray-300 px-4 py-2">Fecha Baja</th>
+                            <th class="border border-gray-300 px-4 py-2">Mostrar Departamento</th>
                         </tr>
                     </thead>
                         @foreach ($departamentos as $depto)
@@ -34,6 +35,9 @@
                                 </td>
                                 <td class="border border-gray-300 px-4 py-2 text-center">
                                     {{ $depto->FechaBajaDepartamento }}
+                                </td>
+                                <td class="border border-gray-300 px-4 py-2 text-center">
+                                    <a href="{{ route('departamentos.mostrarDepartamento', $depto->CodDepartamento) }}">Ver</a>
                                 </td>
                             </tr>
                         @endforeach

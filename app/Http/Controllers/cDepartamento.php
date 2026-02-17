@@ -14,4 +14,12 @@ class cDepartamento extends Controller{
         return view('departamentos.index', compact('departamentos'));
     }
 
+    /**
+     * Función para mostrar los datos de un departamento.
+     * @param String $id recibe el código de departamento como parametro
+     */
+    public function mostrarDepartamento($codDepartamento){
+        $departamento = Departamento::findOrFail($codDepartamento);
+        return view('mostrarDepartamento', compact('departamento'));
+    }
 }
