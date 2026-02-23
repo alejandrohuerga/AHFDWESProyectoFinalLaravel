@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
@@ -10,36 +11,18 @@ class Comment extends Model
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'user_id',
-        'text',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
+     * Definimos la relación inversa de muchos a uno entre Comment y User.
+     * Un comentario pertenece a un usuario, pero un usuario puede tener muchos comentarios.
      * 
-     * @var list<string>
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
 
-    protected $hidden = [
-        'user_id',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function user(): BelongsTo 
     {
-        return [
-            'user_id' => 'integer',
-            'text' => 'string',
-        ];
+        // Un comentario pertenece a un usuario, por lo que usamos belongsTo. 
+        // El primer parámetro es el modelo al que pertenece, el segundo es la clave foránea en la tabla comments, y el tercero es la clave local en la tabla users.
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
 
 }
