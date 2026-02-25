@@ -17,12 +17,11 @@ class Comment extends Model
      * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
 
-    public function user(): BelongsTo 
+    public function user(): BelongsTo
     {
         // Un comentario pertenece a un usuario, por lo que usamos belongsTo. 
         // El primer parámetro es el modelo al que pertenece, el segundo es la clave foránea en la tabla comments, y el tercero es la clave local en la tabla users.
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
-
 
 }
