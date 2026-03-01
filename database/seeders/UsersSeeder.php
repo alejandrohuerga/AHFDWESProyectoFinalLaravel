@@ -34,5 +34,12 @@ class UsersSeeder extends Seeder
          * Si queremos ejecutar todos los seeders registrados en DatabaseSeeder, podemos usar el comando:
          * php artisan db:seed (Todos los seeders registrados en DatabaseSeeder)
         */
+
+        /**
+         * Si queremos borrar todos los datos y que se vuelve a ejecutar el seed en el mismo comando, podemos usar el comando:
+         * php artisan migrate:fresh --seed
+         * Este comando borra todas las tablas, vuelve a ejecutar las migraciones y luego ejecuta los seeders registrados en DatabaseSeeder.
+         * Es útil para tener una base de datos limpia.
+         */
     }
 }
