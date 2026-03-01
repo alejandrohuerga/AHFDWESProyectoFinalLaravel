@@ -21,6 +21,13 @@ class DatabaseSeeder extends Seeder
          * $this->call(PostsSeeder::class);
         */
         
+        /**
+         * Podemos aqui utilizar los factorys para crear varios usuarios de ejemplo, 
+         * pero en este caso vamos a crear un usuario específico con datos concretos para asegurarnos de que existe un usuario con ID 1 en la base de datos,
+         * ya que el seeder de comentarios depende de ese usuario para asignar el comentario a ese usuario.
+         * User::factory(10)->create(); 
+        */
+        
         $this->call([
             /** 
              * Agregamos el seeder de comentarios para que se ejecute después del seeder de usuarios, 
