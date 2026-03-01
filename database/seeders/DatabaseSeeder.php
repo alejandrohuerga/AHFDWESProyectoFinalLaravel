@@ -15,11 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        /**
+         * Llamamos al seeder de usuarios para que se ejecute y cree el usuario en la base de datos.
+         * Si tuviéramos más seeders, los llamaríamos aquí también para que se ejecuten todos juntos. Por ejemplo:
+         * $this->call(PostsSeeder::class);
+        */
+        
+        $this->call([
+            /** 
+             * Agregamos el seeder de comentarios para que se ejecute después del seeder de usuarios, 
+             *ya que el seeder de comentarios depende de que exista un usuario con ID 1 para asignar el comentario a ese usuario.
+            */
+            UsersSeeder::class,
+            CommentSeeder::class
         ]);
     }
 }

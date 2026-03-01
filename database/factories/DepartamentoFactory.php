@@ -17,7 +17,7 @@ class DepartamentoFactory extends Factory
     public function definition(): array
     {
         return [
-             'CodDepartamento' => strtoupper($this->faker->unique()->lexify('???')), // 3 letras mayúsculas
+            'CodDepartamento' => strtoupper($this->faker->unique()->lexify('???')), // 3 letras mayúsculas
             'DescDepartamento' => $this->faker->words(2, true), // "Recursos Humanos", "Finanzas"
             'FechaCreacionDepartamento' => now(),
             'VolumenDeNegocio' => $this->faker->randomFloat(2, 1000, 500000),
