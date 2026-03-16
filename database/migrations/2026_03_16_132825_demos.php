@@ -25,6 +25,7 @@ return new class extends Migration
     
     public function up(): void
     {
+        // Crea una tabla en la base de datos llamada demos.
         Schema::create('demos' ,function (Blueprint $table){
             // Poniendo id Laravel nos creara una columna BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
             $table -> id();
@@ -41,9 +42,12 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     * Función la cual realiza un rollback y vuelve atras las migraciones antes de ejecutar el up.
      */
+
     public function down(): void
     {
-        //
+        // Borra la tbla demos de la base de datos (Revierte la función up)
+        Schema::dropIfExists('demos');
     }
 };

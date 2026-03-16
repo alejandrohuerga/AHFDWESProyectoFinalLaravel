@@ -23,7 +23,9 @@ return new class extends Migration
     
     public function up(): void
     {
+        // Creación de la tbla en la base de datos analisis.
         Schema::create('analisis' ,function (Blueprint $table){
+            // Poniendo id Laravel nos creara una columna BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
             $table -> id();
             $table -> bigInteger('demo_id');
             $table -> foreign('demo_id')->references('id') ->on('demos')->onDelete('cascade')->unsigned()->index();
@@ -38,9 +40,11 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     * Función la cual realiza n rollback y vuelve atras las migraciones antes de ejecutar el up.
      */
     public function down(): void
     {
-        //
+        // Borra la tabla análisis
+        Schema::dropIfExists('analisis');
     }
 };

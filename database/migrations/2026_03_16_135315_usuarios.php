@@ -20,10 +20,12 @@ return new class extends Migration
      * Run the migrations.
      * Hace que la migración se ejecute creando la tabla en la base de datos.
      */
-    
+
     public function up(): void
     {
+        // Crea la tabla de la Base de Datos de usuarios.
         Schema::create('usuarios' ,function (Blueprint $table){
+            // Poniendo id Laravel nos creara una columna BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
             $table -> id();
             $table -> string('nombre');
             $table -> string('correo');
@@ -32,13 +34,39 @@ return new class extends Migration
             $table -> timestamp('fecha_creacion_cuenta');
             $table -> timestamp('fecha_actualizacion');
         });
+
+        // Crea la tabla de la base de datos password_reset_tokens.
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        // Crea la tabla de la base de datos de sessions
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
     }
+
+
 
     /**
      * Reverse the migrations.
+     * Función la cual realiza n rollback y vuelve atras las migraciones antes de ejecutar el up.
      */
+
     public function down(): void
     {
-        //
+        // Borra la tabla usuarios.
+        Schema::dropIfExists('usuarios');
+        // Borra la tabla password_reset_tokens
+        Schema::dropIfExists('password_reset_tokens');
+        // Borra la tbla sesiones.
+        Schema::dropIfExists('sessions');
     }
 };
