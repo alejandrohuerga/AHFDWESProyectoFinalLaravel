@@ -1,0 +1,78 @@
+
+<div style="font-family:var(--font-mono);font-size:12px;line-height:1.7;color:var(--color-text-primary);padding:8px 0">
+
+<div style="margin-bottom:24px">
+<div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">usuarios</div>
+<table style="width:100%;border-collapse:collapse">
+  <thead>
+    <tr style="background:var(--color-background-secondary)">
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Columna</th>
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Tipo</th>
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Restricciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">id</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">BIGINT UNSIGNED</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">PK, AUTO_INCREMENT</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">nombre</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">VARCHAR(255)</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">correo</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">VARCHAR(255)</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL, UNIQUE</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">correo_verificado_en</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">TIMESTAMP</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NULL</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">contrasena</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">VARCHAR(255)</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">token_recuerdo</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">VARCHAR(100)</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NULL</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">creado_en</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">TIMESTAMP</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NULL</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px">actualizado_en</td><td style="padding:5px 10px;color:var(--color-text-info)">TIMESTAMP</td><td style="padding:5px 10px;color:var(--color-text-secondary)">NULL</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div style="margin-bottom:24px">
+<div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">demos</div>
+<table style="width:100%;border-collapse:collapse">
+  <thead>
+    <tr style="background:var(--color-background-secondary)">
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Columna</th>
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Tipo</th>
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Restricciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">id</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">BIGINT UNSIGNED</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">PK, AUTO_INCREMENT</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">usuario_id</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">BIGINT UNSIGNED</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL, FK → usuarios(id)</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">nombre_archivo</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">VARCHAR(255)</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">nombre_original</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">VARCHAR(255)</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">ruta</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">VARCHAR(500)</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">estado</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">ENUM</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">'pendiente','procesando','completado','error' — DEFAULT 'pendiente'</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">subido_en</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">TIMESTAMP</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL, DEFAULT CURRENT_TIMESTAMP</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">creado_en</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">TIMESTAMP</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NULL</td></tr>
+    <tr><td style="padding:5px 10px">actualizado_en</td><td style="padding:5px 10px;color:var(--color-text-info)">TIMESTAMP</td><td style="padding:5px 10px;color:var(--color-text-secondary)">NULL</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div>
+<div style="font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">analisis</div>
+<table style="width:100%;border-collapse:collapse">
+  <thead>
+    <tr style="background:var(--color-background-secondary)">
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Columna</th>
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Tipo</th>
+      <th style="text-align:left;padding:6px 10px;font-size:11px;font-weight:500;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border-tertiary)">Restricciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">id</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">BIGINT UNSIGNED</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">PK, AUTO_INCREMENT</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">demo_id</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">BIGINT UNSIGNED</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL, UNIQUE, FK → demos(id)</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">resultado_json</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">JSON</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">nombre_mapa</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">VARCHAR(100)</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NULL</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">rondas_jugadas</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">TINYINT UNSIGNED</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NULL</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">puntuacion_equipo1</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">TINYINT UNSIGNED</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NULL</td></tr>
+    <tr><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">puntuacion_equipo2</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">TINYINT UNSIGNED</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NULL</td></tr>
+    <tr style="background:var(--color-background-secondary)"><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary)">analizado_en</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-info)">TIMESTAMP</td><td style="padding:5px 10px;border-bottom:1px solid var(--color-border-tertiary);color:var(--color-text-secondary)">NOT NULL</td></tr>
+    <tr><td style="padding:5px 10px">creado_en</td><td style="padding:5px 10px;color:var(--color-text-info)">TIMESTAMP</td><td style="padding:5px 10px;color:var(--color-text-secondary)">NULL</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div style="margin-top:20px;padding:12px;background:var(--color-background-secondary);border-radius:8px;font-size:11px;color:var(--color-text-secondary)">
+  FK: demos.usuario_id → usuarios(id) ON DELETE CASCADE &nbsp;·&nbsp; FK: analisis.demo_id → demos(id) ON DELETE CASCADE
+</div>
+</div>
