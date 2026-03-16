@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Clase con la migración de la clase analisis.
+ * Clase con la migración de la clase usuarios.
  * Esta migración incluye la funcion up() la cual sirve para crear la base de datos.
  * También incluye la función down() en caso de hacer rollback poder borrar.
  * 
@@ -23,16 +23,14 @@ return new class extends Migration
     
     public function up(): void
     {
-        Schema::create('analisis' ,function (Blueprint $table){
+        Schema::create('usuarios' ,function (Blueprint $table){
             $table -> id();
-            $table -> bigInteger('demo_id');
-            $table -> foreign('demo_id')->references('id') ->on('demos')->onDelete('cascade')->unsigned()->index();
-            $table -> json('resultado_json');
-            $table -> string('nombre_mapa');
-            $table -> integer('rondas_jugadas');
-            $table -> integer ('puntuacion_equipo1');
-            $table -> integer('puntuacion_equipo2');
-            $table -> timestamp('fecha_analisis');
+            $table -> string('nombre');
+            $table -> string('correo');
+            $table -> string('password');
+            $table -> timestamp('fecha_verificacion_correo');
+            $table -> timestamp('fecha_creacion_cuenta');
+            $table -> timestamp('fecha_actualizacion');
         });
     }
 
