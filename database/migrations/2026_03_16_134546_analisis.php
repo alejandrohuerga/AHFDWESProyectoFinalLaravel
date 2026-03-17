@@ -24,17 +24,15 @@ return new class extends Migration
     public function up(): void
     {
         // Creación de la tbla en la base de datos analisis.
-        Schema::create('analisis' ,function (Blueprint $table){
-            // Poniendo id Laravel nos creara una columna BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
-            $table -> id();
-            $table -> bigInteger('demo_id');
-            $table -> foreign('demo_id')->references('id') ->on('demos')->onDelete('cascade')->unsigned()->index();
-            $table -> json('resultado_json');
-            $table -> string('nombre_mapa');
-            $table -> integer('rondas_jugadas');
-            $table -> integer ('puntuacion_equipo1');
-            $table -> integer('puntuacion_equipo2');
-            $table -> timestamp('fecha_analisis');
+        Schema::create('analisis', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('demo_id')->constrained('demos')->cascadeOnDelete();
+            $table->json('resultado_json');
+            $table->string('nombre_mapa');
+            $table->integer('rondas_jugadas');
+            $table->integer('puntuacion_equipo1');
+            $table->integer('puntuacion_equipo2');
+            $table->timestamp('fecha_analisis');
         });
     }
 

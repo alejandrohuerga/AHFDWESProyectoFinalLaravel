@@ -1,22 +1,34 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
-
-/**
- * Clase Usuario (Representa un Usuario de la Base de Datos).
- * 
- * Extiende de la clase Authenticatable lo cual nos permite decirle a Laravel
- * que esta clase puede iniciar session , registrarse ...
- * 
- * @author Alejandro De la huerga.
- * @since 16/03/2026
- * @version 1.0.0
- */
 
 class Usuario extends Authenticatable
 {
-    //
+    use Notifiable;
+
+    // Nombre de la tabla en la base de datos
+    // Lo ponemos explícito porque Laravel por defecto buscaría 'usuarios'
+    protected $table='usuarios';
+
+    protected $fillable = [ 
+        'nombre',
+        'correo',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'fecha_verificacion_correo' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 }

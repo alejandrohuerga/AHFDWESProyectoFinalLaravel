@@ -25,14 +25,14 @@ return new class extends Migration
     {
         // Crea la tabla de la Base de Datos de usuarios.
         Schema::create('usuarios' ,function (Blueprint $table){
-            // Poniendo id Laravel nos creara una columna BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
+            // Poniendo id, Laravel nos creara una columna BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
             $table -> id();
-            $table -> string('nombre');
+            $table -> string('nombre') -> unique();
             $table -> string('correo');
             $table -> string('password');
-            $table -> timestamp('fecha_verificacion_correo');
-            $table -> timestamp('fecha_creacion_cuenta');
-            $table -> timestamp('fecha_actualizacion');
+            $table -> timestamp('fecha_verificacion_correo') ->nullable(); // Así no falla si no se rellena.
+            $table->rememberToken(); // Para realizar la función de "Recuerdame"
+            $table->timestamps(); // Esto crea created_at y updated_at automáticamente.
         });
 
         // Crea la tabla de la base de datos password_reset_tokens.
