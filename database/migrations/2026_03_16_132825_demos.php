@@ -25,18 +25,15 @@ return new class extends Migration
     
     public function up(): void
     {
-        // Crea una tabla en la base de datos llamada demos.
-        Schema::create('demos' ,function (Blueprint $table){
-            // Poniendo id Laravel nos creara una columna BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
-            $table -> id();
-            $table -> bigInteger('usuario_id');
-            $table -> foreign('usuario_id')-> references('id') -> on ('usuarios')->onDelete('cascade')->unsigned()->index();
-            $table -> string('nombre_archivo');
-            $table -> string('nombre_original');
-            $table -> string('ruta');
-            $table -> string('estado');
-            $table -> timestamp('fecha_subida');
-            $table -> timestamp('fecha_creacion');
+        Schema::create('demos', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('usuario_id')->constrained('usuarios')->cascadeOnDelete();
+            $table->string('nombre_archivo');
+            $table->string('nombre_original');
+            $table->string('ruta');
+            $table->string('estado');
+            $table->timestamp('fecha_subida');
+            $table->timestamp('fecha_creacion');
         });
     }
 
