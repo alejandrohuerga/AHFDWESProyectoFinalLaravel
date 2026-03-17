@@ -14,5 +14,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Demos extends Model
 {
-    //
+    /** 
+     * Nombre de la tabla en la base de datos
+     * Lo ponemos explícito porque Laravel por defecto buscaría 'demos'. 
+     *
+     * @var String
+    */
+    protected $table = 'demos';
+
+    
+
+
 }
