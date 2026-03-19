@@ -30,7 +30,17 @@ class DemoController extends Controller
     {
         // Validamos que el archivo sea un archivo y que tenga la extensión .dem y que su peso máximo sea de 500MB.
         $request->validate([
-            'file' => 'required|file|mimes:dem|max:512000', 
+            'file' => [
+                'required',
+                'file',
+                'max:512000', // 500MB
+                // Validamos la extensión manualmente ya que es una version de Laravel inferior a la 11.
+                function ($attribute, $value, $fail) {
+                    if (strtolower($value->getClientOriginalExtension()) !== 'dem') {
+                        $fail('El archivo debe tener obligatoriamente la extensión .dem.');
+                    }
+                },
+            ],
         ]);
 
         // Guardamos el archivo en la carpeta storage/app/demos.
