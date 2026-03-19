@@ -6,6 +6,7 @@
     <div class="container">
         <!-- Formulario para subir archivo -->
         <form action="{{ route('demo.guardar') }}" method="POST" enctype="multipart/form-data">
+            <!--Token de seguridad para evitar ataques CSRF (Cross-Site Request Forgery) -->
             @csrf
             <div>
                 <!-- Campo para elegir el archivo -->
@@ -16,7 +17,6 @@
                 <button type="submit">Subir archivo</button>
             </div>
         </form>
-
         <!-- Mostrar mensajes de éxito o error -->
         @if(session('success'))
             <p style="color: green;">{{ session('success') }}</p>
@@ -25,8 +25,8 @@
         @if(session('error'))
             <p style="color: red;">{{ session('error') }}</p>
         @endif
-        
-        <!-- Mostrar errores de validación del archivo-->
+
+        <!-- Mostrar errores de validación del archivo (IMPORTANTE PARA DEPURACIÓN) -->
         @if ($errors->any())
             <div style="color: red;">
                 <ul>

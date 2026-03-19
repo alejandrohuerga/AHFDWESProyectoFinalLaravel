@@ -30,11 +30,16 @@ Route::get('/dashboard', function () {
 /**
  * La siguiente ruta es para el apartado del nav ANALISIS, que por ahora no hace nada, pero se le asigna el middleware auth y verified, 
  * y se le asigna el nombre analisis para poder acceder a ella desde otras partes de la aplicación.
+ * 
+ * Vamos a codificarla para que conozca la variable $partidosSubidosUsuario, que es la variable que 
+ * contiene la información de los partidos subidos por el usuario logueado.
+ * 
+ * Solo para usuarios autenticados y verificados.
  */
 
-Route::get('/analisis',function(){
-    return view('analisis'); // Devuelve la ruta analisis.blade.php.
-})->middleware(['auth', 'verified'])->name('analisis'); // Solo para usuarios autenticados y verificados, y se le asigna el nombre analisis para poder acceder a ella desde otras partes de la aplicación.
+Route::get('/analisis', [App\Http\Controllers\AnalisisController::class, 'seleccionarPartidosUsuario'])->middleware(['auth', 'verified'])->name('analisis'); 
+
+
 
 /**
  * Ruta para guardar el archivo .dem 

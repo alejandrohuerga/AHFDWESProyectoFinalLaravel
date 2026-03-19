@@ -33,11 +33,11 @@ class DemoController extends Controller
             'file' => [
                 'required',
                 'file',
-                'max:512000', // 500MB
+                'max:700000', // 500MB
                 // Validamos la extensión manualmente ya que es una version de Laravel inferior a la 11.
                 function ($attribute, $value, $fail) {
                     if (strtolower($value->getClientOriginalExtension()) !== 'dem') {
-                        $fail('El archivo debe tener obligatoriamente la extensión .dem.');
+                        $fail('ARCHIVO NO VÁLIDO');
                     }
                 },
             ],
@@ -75,7 +75,7 @@ class DemoController extends Controller
                 'fecha_creacion' => now(),
             ]);
 
-            return redirect()->route('dashboard')->with('success', 'Archivo subido correctamente.');
+            return redirect()->route('dashboard')->with('success', 'ARCHIVO SUBIDO CON EXITO LISTO PARA PROCESAR');
             
         } else {
             return redirect()->route('dashboard')->with('error', 'Archivo no válido.');
