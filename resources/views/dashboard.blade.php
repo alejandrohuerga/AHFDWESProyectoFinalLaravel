@@ -1,8 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <livewire:componente-prueba-livewire/>
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            ANALISIS DE PARTIDOS
+            SUBIR PARTIDOS
         </h2>
     </x-slot>
 
@@ -17,12 +16,22 @@
                 <h2 class="text-center text-gray-400   text-xs leading-4">DEM , Peso máximo de 500MB</h2>
             </div>
             <div class="grid gap-2">
-                <h4 class="text-center text-gray-900 text-sm font-medium leading-snug">Arrastra y Suelta Aqui tu Archivo del partido</h4>
                 <div class="flex items-center justify-center">
-                    <label>
-                        <input type="file" hidden />
-                        <div class="flex w-28 h-9 px-2 flex-col bg-indigo-600 rounded-full shadow text-white text-xs font-semibold leading-4 items-center justify-center cursor-pointer focus:outline-none">SUBIR ARCHIVO</div>
-                    </label>
+                    <!-- Formulario para subir el archivo .dem -->
+                    <!-- El formulario se envía a la ruta demo.guardar, que se encarga de procesar el archivo y guardarlo en el servidor. -->
+                    <form action="{{ route('demo.guardar') }}" method="POST" enctype="multipart/form-data" class="flex flex-col items-center justify-center w-full">
+                        @csrf
+                        <!-- Input oculto para el archivo -->
+                        <input id="dropzone-file" type="file" name="file" class="hidden" />
+                        
+                        <!-- Etiqueta para activar el input -->
+                        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-12 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-gray-400 focus:outline-none">
+                            <span class="text-sm leading-2 text-gray-600">Selecciona un archivo</span>
+                        </label>
+                        
+                        <!-- Botón para enviar el archivo -->
+                        <button type="submit" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Subir archivo</button>
+                    </form>
                 </div>
             </div>
         </div>

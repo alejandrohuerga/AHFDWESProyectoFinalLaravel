@@ -22,7 +22,4 @@ class Demos extends Model
     */
     protected $table = 'demos';
 
-    
-
-
 }
