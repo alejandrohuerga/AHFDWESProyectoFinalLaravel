@@ -36,5 +36,35 @@
                 </ul>
             </div>
         @endif
+
+        <!-- Mostrar la tabla de resultados según subamos el archivo -->
+
+        @if(session('stats'))
+            <div class="mt-8">
+                <h3>Resultados del Partido</h3>
+                <table border="1" style="width: 100%; text-align: left; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2;">
+                            <th>Nombre</th>
+                            <th>Kills</th>
+                            <th>Muertes</th>
+                            <th>Asistencias</th>
+                            <th>K/D</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(session('stats') as $jugador)
+                            <tr>
+                                <td>{{ $jugador['nombre'] }}</td>
+                                <td>{{ $jugador['kills'] }}</td>
+                                <td>{{ $jugador['muertes'] }}</td>
+                                <td>{{ $jugador['asistencias'] }}</td>
+                                <td>{{ $jugador['kd'] }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
     </div>
 </x-app-layout>

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Demos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Storage;
 /**
  * Controlador del archivo .dem que se cargue en la aplicación web.
  * Este controlador se encarga de recibir el archivo .dem que se cargue en la aplicación web.
@@ -26,59 +27,37 @@ class DemoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
 
-    public function guardarArchivo(Request $request)
+    public function guardar(Request $request)
     {
-        // Validamos que el archivo sea un archivo y que tenga la extensión .dem y que su peso máximo sea de 500MB.
+        // 1. Validar el archivo
         $request->validate([
-            'file' => [
-                'required',
-                'file',
-                'max:700000', // 500MB
-                // Validamos la extensión manualmente ya que es una version de Laravel inferior a la 11.
-                function ($attribute, $value, $fail) {
-                    if (strtolower($value->getClientOriginalExtension()) !== 'dem') {
-                        $fail('ARCHIVO NO VÁLIDO');
-                    }
-                },
-            ],
+            'file' => 'required|file|max:102400', // Máximo 100MB
         ]);
 
-        // Guardamos el archivo en la carpeta storage/app/demos.
-        if($request->file('file')->isValid()) {
-            /**
-             * Vamos a recoger los datos para insertar el archivo en la base de datos. 
-             * Tabla demos tiene los campos: id, usuario_id, nombre_archivo,nombre_original, ruta, estado, fecha_subida,fecha_creacion.
-             * 
-             * Teniendo en cuenta estos datos vamos a recoger el nombre del archivo, la ruta del archivo, el estado del archivo (pendiente de análisis), 
-             * la fecha de subida y la fecha de creación.
-             */
+        try {
+            // 2. Guardar archivo en storage/app/demos
+            $path = $request->file('file')->store('demos');
+            $fullPath = storage_path('app/' . $path);
 
-            // name del input file del formulario.
-            $file = $request->file('file');
-            // Generamos un nombre único para el archivo, utilizando el nombre de usuario y el nombre original del archivo. (nombre_archivo).
-            $nombre_archivo = Auth::user()->nombre . '_' .  $file->getClientOriginalName();
-            $path = $file->storeAs('demos', $nombre_archivo); // Guardamos el archivo en la carpeta storage/app/demos.
-            $usuario_id = Auth::id(); // Obtenemos el id del usuario que ha subido el archivo.
-            $ruta = 'demos/' . $nombre_archivo; // Ruta del archivo guardado.
+            // 3. Ejecutar el script de Node.js
+            $scriptPath = storage_path('scripts/parse.js');
 
-            /**
-             * Guardamos la información del archivo en la base de datos, utilizando el modelo Demos y el método create 
-             * para insertar un nuevo registro en la tabla demos.
-             */
-            Demos::create([
-                'usuario_id' => $usuario_id,
-                'nombre_archivo' => $nombre_archivo,
-                'nombre_original' => $file->getClientOriginalName(),
-                'ruta' => 'demos/' . $nombre_archivo,
-                'estado' => 'pendiente de análisis',
-                'fecha_subida' => now(),
-                'fecha_creacion' => now(),
-            ]);
+            // Usamos el facade Process de Laravel para llamar a Node
+            $result = Process::run("node $scriptPath $fullPath");
 
-            return redirect()->route('dashboard')->with('success', 'ARCHIVO SUBIDO CON EXITO LISTO PARA PROCESAR');
-            
-        } else {
-            return redirect()->route('dashboard')->with('error', 'Archivo no válido.');
+            if ($result->successful()) {
+                $stats = json_decode($result->output(), true);
+
+                // Borrar archivo después de procesar para no llenar el disco
+                Storage::delete($path);
+
+                return back()->with('success', '¡Demo analizada!')->with('stats', $stats);
+            }
+
+            return back()->with('error', 'Error al procesar la demo: ' . $result->errorOutput());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
         }
     }
 }
+
