@@ -38,7 +38,9 @@
         @endif
 
         <!-- Mostrar la tabla de resultados según subamos el archivo -->
-
+        <pre>
+            {{ var_dump(session('stats')) }}
+        </pre>        
         @if(session('stats'))
             <div class="mt-8">
                 <h3>Resultados del Partido</h3>
@@ -55,11 +57,11 @@
                     <tbody>
                         @foreach(session('stats') as $jugador)
                             <tr>
-                                <td>{{ $jugador['nombre'] }}</td>
-                                <td>{{ $jugador['kills'] }}</td>
-                                <td>{{ $jugador['muertes'] }}</td>
-                                <td>{{ $jugador['asistencias'] }}</td>
-                                <td>{{ $jugador['kd'] }}</td>
+                                <td>{{ $jugador['name'] ?? 'Jugador' }}</td>
+                                <td>{{ $jugador['kills_total'] ?? 0 }}</td>
+                                <td>{{ $jugador['deaths_total'] ?? 0 }}</td>
+                                <td>{{ $jugador['mvps'] ?? 0 }}</td>
+                                <td>{{ $jugador['score'] ?? 0 }}</td>
                             </tr>
                         @endforeach
                     </tbody>

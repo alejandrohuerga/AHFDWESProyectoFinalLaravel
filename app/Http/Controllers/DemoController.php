@@ -27,37 +27,49 @@ class DemoController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
 
-    public function guardar(Request $request)
+    public function guardarArchivo(Request $request)
     {
-        // 1. Validar el archivo
-        $request->validate([
-            'file' => 'required|file|max:102400', // Máximo 100MB
-        ]);
+        // 1. Guardamos el archivo
+        $path = $request->file('file')->store('demos');
 
-        try {
-            // 2. Guardar archivo en storage/app/demos
-            $path = $request->file('file')->store('demos');
-            $fullPath = storage_path('app/' . $path);
+        // 2. IMPORTANTE: Usamos storage_path con 'app/private/' 
+        // Laravel lo guarda en private por defecto ahora
+        $fullPath = storage_path('app/private/' . $path);
 
-            // 3. Ejecutar el script de Node.js
-            $scriptPath = storage_path('scripts/parse.js');
+        // 3. Normalizamos las barras para que Rust (el parser) no de 'os error 3'
+        $fullPathFixed = str_replace('\\', '/', $fullPath);
 
-            // Usamos el facade Process de Laravel para llamar a Node
-            $result = Process::run("node $scriptPath $fullPath");
+        // 4. Ejecutamos el script
+        $result = \Illuminate\Support\Facades\Process::path(storage_path('scripts/demoparser'))
+            ->run("node parse.cjs \"$fullPathFixed\"");
 
-            if ($result->successful()) {
-                $stats = json_decode($result->output(), true);
-
-                // Borrar archivo después de procesar para no llenar el disco
-                Storage::delete($path);
-
-                return back()->with('success', '¡Demo analizada!')->with('stats', $stats);
-            }
-
-            return back()->with('error', 'Error al procesar la demo: ' . $result->errorOutput());
-        } catch (\Exception $e) {
-            return back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
+        if ($result->successful()) {
+            $stats = json_decode($result->output(), true);
+            return back()->with('stats', $stats);
         }
+
+        // Si falla, esto te dirá la ruta exacta que intentó leer para que verifiques
+        return back()->with('error', "Error: " . $result->errorOutput() . " | Ruta intentada: " . $fullPathFixed);
+
+        // --- AÑADE ESTO PARA DEPURAR ---
+        if (!$result->successful()) {
+            dd("Error de Node:", $result->errorOutput());
+        }
+
+        $output = $result->output();
+        $stats = json_decode($output, true);
+
+        // Si esto sale en pantalla al subir la demo, sabremos que el JSON llegó bien
+        // Si sale null o vacío, el problema está en el parse.js
+        // dd($stats); 
+        // -------------------------------
+
+        if (!empty($stats)) {
+            return back()->with('success', '¡Analizada!')
+                        ->with('stats', $stats); // Asegúrate de que el nombre sea 'stats'
+        }
+
+        return back()->with('error', 'El parser no devolvió datos. Salida: ' . $output);
     }
 }
 
