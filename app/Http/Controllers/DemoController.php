@@ -29,47 +29,47 @@ class DemoController extends Controller
 
     public function guardarArchivo(Request $request)
     {
-        // 1. Guardamos el archivo
-        $path = $request->file('file')->store('demos');
+        // Verificamos que sea un archivo.
+        $request -> validate([
+            'file' => 'required|file|max:512000',
+        ]);
 
-        // 2. IMPORTANTE: Usamos storage_path con 'app/private/' 
-        // Laravel lo guarda en private por defecto ahora
-        $fullPath = storage_path('app/private/' . $path);
+        try{
 
-        // 3. Normalizamos las barras para que Rust (el parser) no de 'os error 3'
-        $fullPathFixed = str_replace('\\', '/', $fullPath);
+            // 1. Guardamos con nombre único y extensión .dem
+            $filename = \Illuminate\Support\Str::random(40) . '.dem';
+            $path = $request->file('file')->storeAs('demos', $filename);
+            $fullPath = Storage::path($path);
+            $fullPathFixed = str_replace('\\', '/', $fullPath);
 
-        // 4. Ejecutamos el script
-        $result = \Illuminate\Support\Facades\Process::path(storage_path('scripts/demoparser'))
-            ->run("node parse.cjs \"$fullPathFixed\"");
+            // 2. Ejecutamos el parser (apuntando a .cjs)
+            $result = Process::path(storage_path('scripts/demoparser'))->timeout(120)->run("node parse.cjs " . escapeshellarg($fullPathFixed));
 
-        if ($result->successful()) {
+            // 3. ¡BORRAMOS EL ARCHIVO .DEM! Ya no lo necesitamos, tenemos los datos en $result
+            // Así liberamos espacio.
+            if (Storage::exists($path)) {
+                Storage::delete($path);
+            }
+
+            // Devolvemos mensaje en caso de error en el parseo.
+            if (!$result->successful()) {
+                return back()->with('error', "Error en el parseo técnico.");
+            }
+
+            // 4. Convertimos el JSON string en un Array de PHP
             $stats = json_decode($result->output(), true);
-            return back()->with('stats', $stats);
+
+            if (empty($stats)) {
+                return back()->with('error', 'La demo no contenía datos válidos.');
+            }
+
+            // 5. Enviamos SOLO el array a la vista
+            return back()->with('success', 'Análisis completado y archivo temporal eliminado.')->with('stats', $stats);
+        }catch(\Exception $ex){
+            return back()->with('error', 'Error crítico: ' . $ex->getMessage());
         }
 
-        // Si falla, esto te dirá la ruta exacta que intentó leer para que verifiques
-        return back()->with('error', "Error: " . $result->errorOutput() . " | Ruta intentada: " . $fullPathFixed);
-
-        // --- AÑADE ESTO PARA DEPURAR ---
-        if (!$result->successful()) {
-            dd("Error de Node:", $result->errorOutput());
-        }
-
-        $output = $result->output();
-        $stats = json_decode($output, true);
-
-        // Si esto sale en pantalla al subir la demo, sabremos que el JSON llegó bien
-        // Si sale null o vacío, el problema está en el parse.js
-        // dd($stats); 
-        // -------------------------------
-
-        if (!empty($stats)) {
-            return back()->with('success', '¡Analizada!')
-                        ->with('stats', $stats); // Asegúrate de que el nombre sea 'stats'
-        }
-
-        return back()->with('error', 'El parser no devolvió datos. Salida: ' . $output);
+        
     }
 }
 
