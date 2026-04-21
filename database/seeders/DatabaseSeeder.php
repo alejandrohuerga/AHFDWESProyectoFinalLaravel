@@ -33,8 +33,17 @@ class DatabaseSeeder extends Seeder
              * Agregamos el seeder de comentarios para que se ejecute después del seeder de usuarios, 
              *ya que el seeder de comentarios depende de que exista un usuario con ID 1 para asignar el comentario a ese usuario.
             */
-            UsersSeeder::class,
-            CommentSeeder::class
+            UsuariosSeeder::class,
         ]);
+
+        /**
+         * La siguiente manera seria como hariamos para ejecutar las Factories.
+         * 
+         * Lo haremos mediante el siguiente comando dentro de la función run():
+         * Usuario::factory(10) -> create();
+         * 
+         */
+
+        
     }
 }
