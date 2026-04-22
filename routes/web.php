@@ -2,6 +2,7 @@
 <?php
 
 use App\Http\Controllers\DemoController;
+use App\Http\Controllers\JugadoresController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,10 @@ Route::get('/dashboard', function () {
  */
 
 Route::get('/analisis', [App\Http\Controllers\AnalisisController::class, 'seleccionarPartidosUsuario'])->middleware(['auth', 'verified'])->name('analisis'); 
+
+Route::get('/jugadores', [JugadoresController::class, 'consumirJSONjugadores']) ->middleware(['auth', 'verified']) ->name('jugadores');
+
+Route::get('/jugadores/{id}', [JugadoresController::class, 'show'])->name('jugadores.show');
 
 
 

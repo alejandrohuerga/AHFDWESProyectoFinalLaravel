@@ -25,6 +25,12 @@
                         {{ request()->routeIs('analisis') ? 'border-cyan-500 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' : 'border-transparent' }}">
                         {{ __('Análisis') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('jugadores')" :active="request()->routeIs('jugadores')"
+                        class="text-[11px] font-bold uppercase tracking-[0.25em] transition-all duration-300 border-b-2 py-5 text-white hover:drop-shadow-[0_0_10px_rgba(6,182,212,1)] focus:outline-none
+                        {{ request()->routeIs('jugadores') ? 'border-cyan-500 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' : 'border-transparent' }}">
+                        {{ __('Jugadores') }}
+                    </x-nav-link>
                 </div>
             </div>
 
