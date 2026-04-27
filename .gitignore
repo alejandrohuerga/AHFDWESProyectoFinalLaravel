@@ -16,9 +16,14 @@
 /public/build
 /public/hot
 /public/storage
+!/storage/app/
+!/storage/app/private/
+!/storage/app/private/JSON/
+!/storage/app/private/JSON/Top50-2026.json
 /storage/*.key
 /storage/pail
 /vendor
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
