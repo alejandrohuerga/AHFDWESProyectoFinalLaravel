@@ -76,6 +76,12 @@ class DemoController extends Controller
                 return back()->with('error', 'La demo no contenía datos válidos o no se detectó el final de la partida.');
             }
 
+            $analisis = new \App\Models\Analisis();
+            $analisis->user_id = Auth::id();
+            $analisis->map_name = 'Desconocido'; // o dinámico si el JSON trae el mapa
+            $analisis->stats = $estadisticas;
+            $analisis->save();
+
             // 6. Enviamos SOLO el array de estadísticas a la vista mediante la sesión.
             // Esto permite mostrar la información en el dashboard sin recargar toda la lógica.
             return back()->with('success', 'Análisis completado y archivo temporal eliminado.')

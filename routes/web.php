@@ -39,12 +39,12 @@ Route::get('/dashboard', function () {
  */
 
 Route::get('/analisis', [App\Http\Controllers\AnalisisController::class, 'seleccionarPartidosUsuario'])->middleware(['auth', 'verified'])->name('analisis'); 
-
 Route::get('/jugadores', [JugadoresController::class, 'consumirJSONjugadores']) ->middleware(['auth', 'verified']) ->name('jugadores');
-
 Route::get('/jugadores/{id}', [JugadoresController::class, 'show'])->name('jugadores.show');
 
-
+Route::get('/analisis/{id}', [App\Http\Controllers\AnalisisController::class, 'show'])
+    ->middleware(['auth', 'verified'])
+    ->name('analisis.show');
 
 /**
  * Ruta para guardar el archivo .dem 
