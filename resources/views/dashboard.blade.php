@@ -111,7 +111,7 @@
                 </div>
             @else
                 <div class="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
-                    <p class="text-slate-400">No hay datos que mostrar. Sube una demo para comenzar el análisis.</p>
+                    <p class="text-black-400">No hay datos que mostrar. Sube una demo para comenzar el análisis.</p>
                 </div>
             @endif
         </div>

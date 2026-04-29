@@ -1,33 +1,36 @@
-<nav x-data="{ open: false }" class="bg-[#0b0e14]/90 backdrop-blur-xl border-b border-cyan-500/20 sticky top-0 z-50">
+<nav x-data="{ open: false }" class="bg-[#E5E9EA]/90 backdrop-blur-xl border-b border-cyan-500/20 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+        <div class="flex justify-between h-20">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="group flex items-center gap-2">
+                        <img src="/images/logos/logo-SinFondo.png" alt="Parser CS2" class="h-20 w-auto object-contain">
+                        <!--
                         <div class="w-8 h-8 bg-cyan-500 rounded-sm flex items-center justify-center rotate-45 group-hover:rotate-180 transition-transform duration-500 shadow-[0_0_15px_rgba(6,182,212,0.8)]">
                             <span class="text-black font-black -rotate-45 group-hover:-rotate-180 transition-transform duration-500">CS</span>
                         </div>
                         <span class="ms-3 text-xl font-black tracking-tighter text-white uppercase group-hover:drop-shadow-[0_0_10px_rgba(6,182,212,1)] transition-all duration-300">
                             Parser<span class="text-cyan-500">.io</span>
                         </span>
+                        -->
                     </a>
                 </div>
 
                 <div class="hidden space-x-10 sm:-my-px sm:ms-12 sm:flex items-center">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" 
-                        class="text-[11px] font-bold uppercase tracking-[0.25em] transition-all duration-300 border-b-2 py-5 text-white hover:drop-shadow-[0_0_10px_rgba(6,182,212,1)] focus:outline-none 
+                        class=" !text-black text-[11px] font-bold uppercase tracking-[0.25em] transition-all duration-300 border-b-2 py-5  hover:drop-shadow-[0_0_10px_rgba(6,182,212,1)] focus:outline-none 
                         {{ request()->routeIs('dashboard') ? 'border-cyan-500 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' : 'border-transparent' }}">
                         {{ __('Subir Archivos') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('analisis')" :active="request()->routeIs('analisis')"
-                        class="text-[11px] font-bold uppercase tracking-[0.25em] transition-all duration-300 border-b-2 py-5 text-white hover:drop-shadow-[0_0_10px_rgba(6,182,212,1)] focus:outline-none
+                        class="!text-black text-[11px] font-bold uppercase tracking-[0.25em] transition-all duration-300 border-b-2 py-5  hover:drop-shadow-[0_0_10px_rgba(6,182,212,1)] focus:outline-none
                         {{ request()->routeIs('analisis') ? 'border-cyan-500 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' : 'border-transparent' }}">
                         {{ __('Análisis') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('jugadores')" :active="request()->routeIs('jugadores')"
-                        class="text-[11px] font-bold uppercase tracking-[0.25em] transition-all duration-300 border-b-2 py-5 text-white hover:drop-shadow-[0_0_10px_rgba(6,182,212,1)] focus:outline-none
+                        class="!text-black text-[11px] font-bold uppercase tracking-[0.25em] transition-all duration-300 border-b-2 py-5  hover:drop-shadow-[0_0_10px_rgba(6,182,212,1)] focus:outline-none
                         {{ request()->routeIs('jugadores') ? 'border-cyan-500 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]' : 'border-transparent' }}">
                         {{ __('Jugadores') }}
                     </x-nav-link>
