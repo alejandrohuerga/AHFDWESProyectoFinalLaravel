@@ -1,10 +1,11 @@
 <x-app-layout>
+    {{--  
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             ANALISIS DE PARTIDOS
         </h2>
     </x-slot>
-
+    --}}
 <style>
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 1.5rem 0; }
   .card-scene { perspective: 1000px; height: 220px; cursor: pointer; }
