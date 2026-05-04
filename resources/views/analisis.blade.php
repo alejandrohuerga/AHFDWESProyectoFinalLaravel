@@ -50,7 +50,9 @@
                         </svg>
                     </div>
                     <div class="map-badge">MAPA #{{ $item->id }}</div>
+                    {{--  
                     <div class="map-name">{{ strtoupper($item->map_name) }}</div>
+                    --}}
                     <div style="display:flex;align-items:center;gap:6px;">
                         <div class="pulse"></div>
                         <div class="map-date">{{ $item->created_at->format('d/m/Y') }}</div>
@@ -67,12 +69,14 @@
                     </div>
                     <div class="stat-row">
                         <span class="stat-label">Fecha</span>
-                        <span class="stat-val">{{ $item->created_at->format('d/m/Y') }}</span>
+                        <span class="stat-val ">{{ $item->created_at->format('d/m/Y') }}</span>
                     </div>
+                    {{--  
                     <div class="stat-row">
                         <span class="stat-label">Mapa</span>
                         <span class="stat-val">{{ $item->map_name }}</span>
                     </div>
+                    --}}
                     <a href="{{ route('analisis.show', $item->id) }}" class="ver-btn">
                         VER ESTADÍSTICAS →
                     </a>
@@ -80,10 +84,12 @@
             </div>
         </div>
         @empty
-            <p style="color:#4a6fa5; letter-spacing:2px; font-size:12px;">
-                // NO HAY ANÁLISIS SUBIDOS //
-            </p>
-        @endforelse
+            <div style="grid-column: 1 / -1; display:flex; justify-content:center; align-items:center; height:300px;">
+                <p style="color:#ffffff; letter-spacing:4px; font-size:22px; text-align:center; opacity:0.8;">
+                    // NO HAY ANÁLISIS SUBIDOS //
+                </p>
+            </div>
+        @endempty
     </div>
 </div>
 

@@ -74,8 +74,9 @@ class AnalisisController extends Controller
 
     public function show($id)
     {
-        $analisis = Analisis::where('user_id', Auth::id())->findOrFail($id);
-        return view('analisis.show', compact('analisis'));
+        $analisis = Analisis::findOrFail($id);
+        $stats = collect($analisis->stats)->sortByDesc('score')->values();
+        return view('analisis.show', compact('analisis', 'stats'));
     }
 
     // Si usas una ruta tipo index independiente

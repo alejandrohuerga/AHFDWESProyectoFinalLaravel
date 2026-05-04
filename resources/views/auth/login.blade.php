@@ -39,5 +39,10 @@
                 {{ __('Iniciar Sesión') }}
             </button>
         </div>
+        <div class="pt-2">
+            <a href="{{ route('register') }}" class="w-full flex justify-center py-3 px-4 border border-white/30 rounded-xl shadow-lg text-sm font-bold text-white bg-transparent hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-200 transform active:scale-[0.98]">
+                {{ __('Registrarse') }}
+            </a>
+        </div>
     </form>
 </x-guest-layout>
