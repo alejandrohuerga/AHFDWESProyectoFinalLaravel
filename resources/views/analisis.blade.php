@@ -7,7 +7,7 @@
     </x-slot>
     --}}
 <style>
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 1.5rem 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; padding: 1.5rem 0; }
   .card-scene { perspective: 1000px; height: 220px; cursor: pointer; }
   .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.7s cubic-bezier(.4,0,.2,1); transform-style: preserve-3d; }
   .card-scene:hover .card-inner { transform: rotateY(180deg); }
@@ -49,13 +49,13 @@
                             <circle cx="12" cy="12" r="3" fill="#009FE3" opacity="0.6"/>
                         </svg>
                     </div>
-                    <div class="map-badge">MAPA #{{ $item->id }}</div>
+                    <div class="map-badge">DEMO #{{ $item->id }}</div>
                     {{--  
                     <div class="map-name">{{ strtoupper($item->map_name) }}</div>
                     --}}
                     <div style="display:flex;align-items:center;gap:6px;">
                         <div class="pulse"></div>
-                        <div class="map-date">{{ $item->created_at->format('d/m/Y') }}</div>
+                        <div class="map-date">{{ $item->created_at -> format('d/m/Y - h:i') }}</div>
                     </div>
                 </div>
                 <div class="card-face card-back">

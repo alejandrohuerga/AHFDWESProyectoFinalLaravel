@@ -4,6 +4,7 @@
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\JugadoresController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AyudaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -65,3 +66,27 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
+/**
+ * Ruta para redirigir desde el nav a la página de ayuda.
+ * En la página de ayuda se encuentra el Manual de Uso del Usuario.
+ * 
+ * Llama al controlador AyudaController al método index que carga la vista.
+ */
+
+Route::get('/ayuda',[App\Http\Controllers\AyudaController::class, 'index']) ->name('ayuda');
+
+/**
+ * Esta ruta nos va a permitir la descarga de los archivos de la 
+ * vista ayuda.
+ * 
+ * Nos permite verificar y contar el número de veces que se descargan.
+ */
+use Illuminate\Support\Facades\Storage;
+
+Route::get('/descargar/{archivo}', function ($archivo) {
+    // Verificamos si el archivo existe en la carpeta storage/app/public/documentos
+    if (Storage::disk('public')->exists("doc/{$archivo}")) {
+        return Storage::disk('public')->download("doc/{$archivo}");
+    }
+    abort(404);
+})->name('doc.descargar');

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class AnalisisController extends Controller
 {
@@ -25,6 +26,9 @@ class AnalisisController extends Controller
      */
     public function store(Request $request)
     {
+
+
+
         // 1. Validar la subida del archivo
         $request->validate([
             'demo_file' => 'required|file|max:100000', // ~100MB
