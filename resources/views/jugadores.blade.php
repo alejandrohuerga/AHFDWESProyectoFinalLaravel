@@ -41,11 +41,11 @@
                             {{-- Grid de Stats rápidas --}}
                             <div class="mt-8 grid grid-cols-2 gap-4 border-t border-slate-200/60 pt-6">
                                 <div class="flex flex-col bg-white/50 p-3 rounded-2xl border border-white/50 shadow-sm">
-                                    <span class="text-slate-400 text-[9px] font-black uppercase tracking-widest">K/D Ratio</span>
+                                    <span class="text-black text-[9px] font-black uppercase tracking-widest">K/D Ratio</span>
                                     <span class="text-2xl font-black text-slate-800">{{ number_format($jugador->KD_ratio, 2) }}</span>
                                 </div>
                                 <div class="flex flex-col bg-white/50 p-3 rounded-2xl border border-white/50 shadow-sm">
-                                    <span class="text-slate-400 text-[9px] font-black uppercase tracking-widest">Impact</span>
+                                    <span class="text-black text-[9px] font-black uppercase tracking-widest">Impact</span>
                                     <span class="text-2xl font-black text-cyan-600">{{ number_format($jugador->rating_de_impacto, 2) }}</span>
                                 </div>
                             </div>
