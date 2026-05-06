@@ -1,75 +1,91 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Demos;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 /**
  * Controlador del archivo .dem que se cargue en la aplicación web.
- * Este controlador se encarga de recibir el archivo .dem que se cargue en la aplicación web.
- * 
  * @author Alejandro De la Huerga
  * @since 18/03/2026
- * @version 1.0.0
+ * @version 1.2.0
  */
 
 class DemoController extends Controller
 {
-    /**
-     * Función para guardar el archivo .dem que se cargue en la aplicación web.
-     * Validamos la subida del archivo .dem que tenga la extensión .dem y que su peso máximo sea de 500MB, y si el archivo es válido, 
-     * lo guardamos en la carpeta storage/app/demos, y guardamos la información del archivo en la base de datos, 
-     * y redirigimos a la ruta dashboard con un mensaje de éxito.
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-
     public function guardarArchivo(Request $request)
     {
-        // Verificamos que sea un archivo.
-        $request -> validate([
-            'file' => 'required|file|max:512000',
+        $request->validate([
+            'file' => 'required|file|max:900000',
         ]);
 
-        try{
-
+        try {
             // 1. Guardamos con nombre único y extensión .dem
-            $filename = \Illuminate\Support\Str::random(40) . '.dem';
-            $path = $request->file('file')->storeAs('demos', $filename);
-            $fullPath = Storage::path($path);
-            $fullPathFixed = str_replace('\\', '/', $fullPath);
+            $nombreArchivo = Str::random(40) . '.dem';
+            $rutaRelativa = $request->file('file')->storeAs('demos', $nombreArchivo);
+            $rutaAbsoluta = str_replace('\\', '/', Storage::path($rutaRelativa));
 
-            // 2. Ejecutamos el parser (apuntando a .cjs)
-            $result = Process::path(storage_path('scripts/demoparser'))->timeout(120)->run("node parse.cjs " . escapeshellarg($fullPathFixed));
+            // 2. Ejecutamos el parser de estadísticas
+            $resultado = Process::path(storage_path('scripts/demoparser'))
+                ->timeout(120)
+                ->run("node parse.cjs " . escapeshellarg($rutaAbsoluta));
 
-            // 3. ¡BORRAMOS EL ARCHIVO .DEM! Ya no lo necesitamos, tenemos los datos en $result
-            // Así liberamos espacio.
-            if (Storage::exists($path)) {
-                Storage::delete($path);
+            if (!$resultado->successful()) {
+                if (Storage::exists($rutaRelativa)) {
+                    Storage::delete($rutaRelativa);
+                }
+                $errorTecnico = $resultado->errorOutput();
+                return back()->with('error', "Error en el análisis técnico: " . ($errorTecnico ?: "Tiempo de espera agotado o salida vacía."));
             }
 
-            // Devolvemos mensaje en caso de error en el parseo.
-            if (!$result->successful()) {
-                return back()->with('error', "Error en el parseo técnico.");
+            // 3. Ejecutamos el parser del mapa (antes de borrar el .dem)
+            $resultadoMapa = Process::path(storage_path('scripts/demoparser'))
+                ->timeout(30)
+                ->run("node metadate.cjs " . escapeshellarg($rutaAbsoluta));
+
+            $mapName = 'Desconocido';
+            if ($resultadoMapa->successful()) {
+                // Formateamos la salida con el nombre eliminando primeras siglas.
+                $mapaJson = json_decode($resultadoMapa->output(), true);
+                $raw = $mapaJson['map'] ?? '';
+                $mapName = !empty($raw) ? ucfirst(preg_replace('/^[a-z]+_/', '', $raw)) : 'Desconocido';
             }
 
-            // 4. Convertimos el JSON string en un Array de PHP
-            $stats = json_decode($result->output(), true);
+            // 4. Convertimos las estadísticas
+            $estadisticas = json_decode($resultado->output(), true);
 
-            if (empty($stats)) {
-                return back()->with('error', 'La demo no contenía datos válidos.');
+            // 5. Borramos el .dem ahora que ya tenemos todo lo que necesitamos
+            if (Storage::exists($rutaRelativa)) {
+                Storage::delete($rutaRelativa);
             }
 
-            // 5. Enviamos SOLO el array a la vista
-            return back()->with('success', 'Análisis completado y archivo temporal eliminado.')->with('stats', $stats);
-        }catch(\Exception $ex){
-            return back()->with('error', 'Error crítico: ' . $ex->getMessage());
+            if (empty($estadisticas)) {
+                return back()->with('error', 'La demo no contenía datos válidos o no se detectó el final de la partida.');
+            }
+
+            // 6. Guardamos en base de datos
+            $analisis = new \App\Models\Analisis();
+            $analisis->user_id = Auth::id();
+            $analisis->map_name = $mapName; // ← ahora dinámico
+            $analisis->stats = $estadisticas;
+            $analisis->save();
+
+            return back()->with('success', 'Análisis completado y archivo temporal eliminado.')
+                         ->with('stats', $estadisticas);
+
+        } catch (\Exception $ex) {
+            if (isset($rutaRelativa) && Storage::exists($rutaRelativa)) {
+                Storage::delete($rutaRelativa);
+            }
+            return back()->with('error', 'Error crítico en el servidor: ' . $ex->getMessage());
         }
-
-        
     }
-}
 
+
+}
