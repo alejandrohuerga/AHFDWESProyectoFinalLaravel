@@ -50,9 +50,9 @@
                         </svg>
                     </div>
                     <div class="map-badge">DEMO #{{ $item->id }}</div>
-                    {{--  
+                      
                     <div class="map-name">{{ strtoupper($item->map_name) }}</div>
-                    --}}
+                    
                     <div style="display:flex;align-items:center;gap:6px;">
                         <div class="pulse"></div>
                         <div class="map-date">{{ $item->created_at -> format('d/m/Y - h:i') }}</div>
@@ -71,12 +71,12 @@
                         <span class="stat-label">Fecha</span>
                         <span class="stat-val ">{{ $item->created_at->format('d/m/Y') }}</span>
                     </div>
-                    {{--  
+                    
                     <div class="stat-row">
                         <span class="stat-label">Mapa</span>
                         <span class="stat-val">{{ $item->map_name }}</span>
                     </div>
-                    --}}
+                    
                     <a href="{{ route('analisis.show', $item->id) }}" class="ver-btn">
                         VER ESTADÍSTICAS →
                     </a>
