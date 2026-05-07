@@ -1,44 +1,94 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use App\Models\Demos;
-use Illuminate\Support\Facades\Auth;
 
-/**
- * Controlador para el análisis de los archivos .dem que se carguen en la aplicación web.
- * 
- * Su función sera mostrar los partidos subidos, los partidos analizados, y los partidos pendientes de análisis,
- * mostrar la información de cada partido, como el nombre del archivo, la fecha de subida, el estado del análisis, etc.
- * 
- * @author Alejandro De la Huerga
- * @since 16/03/2026
- * @version 1.0.0
- */
+use App\Models\Analisis;
+use App\Models\Demos;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class AnalisisController extends Controller
 {
     /**
-     * seleccionarPartidosUsuario() permite seleccionar en la base de datos los partidos subidos por el usuario logueado.
-     * 
-     * Dicha información se mostrará en la vista analisis.blade.php, que es donde se encuentra el componente Livewire 
-     * que hemos creado para mostrar los partidos subidos por el usuario logueado.
-     * 
-     * @return \Illuminate\View\View
+     * Muestra la vista principal con los análisis del usuario.
      */
-    
-    public function seleccionarPartidosUsuario()
+    public function seleccionarPartidosUsuario() 
     {
-        // Seleccionamos los partidos subidos por el usuario logueado.
-        $partidosSubidosUsuario = Demos::where('usuario_id', Auth::id())->get();
+        $analisisSubidos = Analisis::where('user_id', Auth::id())->latest()->get();
+        return view('analisis', compact('analisisSubidos'));
+    }
 
-        /** 
-         * Devolvemos la vista analisis.blade.php con la información de los partidos subidos por el usuario logueado.
-         * El compact es para pasar la variable $partidosSubidosUsuario a la vista analisis.blade.php, y poder mostrar 
-         * la información de los partidos subidos por el usuario logueado.
-         * 
-         * Esto nos permite utilizar la variable $partidosSubidosUsuario en la vista analisis.blade.php, y mostrar la información.
-         */
-        return view('analisis', compact('partidosSubidosUsuario')); 
+    /**
+     * Recibe el archivo .dem, lo parsea con Node y guarda el JSON en la DB.
+     */
+    public function store(Request $request)
+    {
+
+
+
+        // 1. Validar la subida del archivo
+        $request->validate([
+            'demo_file' => 'required|file|max:100000', // ~100MB
+        ]);
+
+        try {
+            // 2. Guardar el archivo temporalmente
+            // Usamos el disco 'local' (storage/app)
+            $path = $request->file('demo_file')->store('temp_demos');
+            $fullPath = storage_path('app/' . $path);
+
+            // 3. Ejecutar el script de Node.js
+            $scriptPath = base_path('scripts/parse_demo.js'); 
+            
+            // Usamos Process de Laravel para capturar la salida
+            $result = Process::run("node \"$scriptPath\" \"$fullPath\"");
+
+            if (!$result->successful()) {
+                return back()->with('error', 'Error en el parser: ' . $result->errorOutput());
+            }
+
+            // 4. Decodificar el JSON que escupe el script de Node
+            $datosJson = json_decode($result->output(), true);
+
+            if (empty($datosJson)) {
+                return back()->with('error', 'El parser devolvió un JSON vacío.');
+            }
+
+            // 5. Guardar en la base de datos
+            $nuevoAnalisis = new Analisis();
+            $nuevoAnalisis->user_id = Auth::id();
+            $nuevoAnalisis->map_name = "Inferno"; // Luego puedes dinamizar esto si el JSON trae el mapa
+            $nuevoAnalisis->stats = $datosJson; // IMPORTANTE: El modelo debe tener: protected $casts = ['stats' => 'array'];
+            $nuevoAnalisis->save();
+
+            // 6. Limpiar: Borrar el archivo .dem temporal para no llenar el disco
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+
+            return redirect()->route('analisis.index')->with('success', '¡Análisis completado y guardado!');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
+        }
+    }
+
+    public function show($id)
+    {
+        $analisis = Analisis::findOrFail($id);
+        $stats = collect($analisis->stats)->sortByDesc('score')->values();
+        return view('analisis.show', compact('analisis', 'stats'));
+    }
+
+    // Si usas una ruta tipo index independiente
+    public function index()
+    {
+        $analisisSubidos = Analisis::where('user_id', Auth::id())
+                            ->latest()
+                            ->get();
+        return view('analisis.index', compact('analisisSubidos'));
     }
 }

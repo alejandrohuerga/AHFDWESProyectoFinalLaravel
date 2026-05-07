@@ -21,11 +21,18 @@ class UsuariosSeeder extends Seeder
          * Lo siguiente sera comprobar los atributos de Usuario en la migración.
          * Rellenamos dichos campos con los datos del usuario.
         */
-        $usuario -> nombre ='Administrador';
-        $usuario -> correo = 'alejandrohuerga.dev@gmail.com';
-        $usuario -> password =Hash::make('Huerga2002');
 
-        // Por último tendriamos que guardar el modelo usuario.
-        $usuario -> save();
+        Usuario::insert([
+            [
+                'nombre' => 'Administrador',
+                'correo' => 'alejandrohuerga.dev@gmail.com',
+                'password' => Hash::make('paso1234')
+            ],
+            [
+                'nombre' => 'Administrador2',
+                'correo' => 'whoishuergale@gmail.com',
+                'password' => Hash::make('paso1234')
+            ]
+        ]);
     }
 }

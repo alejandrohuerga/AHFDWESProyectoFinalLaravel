@@ -3,16 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 /**
- * Clase que representa el análisis de un partido en formato JSON.
+ * La clases Analisis representa el archivo JSON una vez realizada la 
+ * explotación de estadisticas del archivo .dem 
+ * Lo que se pretende con este modelo es el muestreo de los analisis sin necesidad
+ * de almacenar los archivos .dem que son bastante mas pesados. 
  * 
- * @author Alejandro De la Huerga Fernández
- * @since 16/03/2026
- * @version 1.0.0 Última actualización 16/03/2026
+ * @author Alejandro De la Huerga
+ * @since 29/04/2026
  */
 
 class Analisis extends Model
 {
-    //
+    /**
+     * Utilizamos el casting de Eloquent.
+     * Nos permitira convertir el archivo JSON en una cadena de texto cada vez que usemos
+     * una tupla de base de datos y asi poder mostrarla comodamente en la vista.
+     */
+    
+    protected $casts = [
+        'stats' => 'array',
+    ];
 }

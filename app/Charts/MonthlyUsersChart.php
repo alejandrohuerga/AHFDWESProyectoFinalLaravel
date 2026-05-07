@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Charts;
-
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use App\Models\Jugador;
 

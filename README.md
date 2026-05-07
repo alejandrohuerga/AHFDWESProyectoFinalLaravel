@@ -8,34 +8,72 @@ La obtención de los archivos .dem de las partidas disputadas de manera profesio
 
 Para la extracción de información de dichos archivos se ha utilizado una **libreria de JavaScript** la cual nos permitira mediante sus métodos y funciones de manera mas liviana y con menos tiempo de carga extraer dicha información y transferirla en formato **JSON** para su posterior presentación en forma de tabla.
 
-## Guía instalación y requerimientos
+## Pila de tecnologías
 
-Como desarrollador web el cual quiera **implementar dicho proyecto de manera local** sin la necesidad de tener acceso a la red y acceder asi desde la aplicación web principal del proyecto , debes de seguir los siguientes pasos y comprobar el *cumplimiento de todos los requisitos:* 
+**A continuación tenemos la pila de tecnologías utilizadas para la elaboración de esta aplicación web:**
 
-- Realizar la descarga de la última release publicada en este mismo repositorio.
-- Sera necesario el uso de un servidor web (Ubuntu Server , Apache Server).
-- Si o queremos ejecutar de manera local podremos utilizar **Laragon** *(Programa el cual nos permite la iniciación de un servidor web para php de manera local)*.
-- Comprobar la instalación de dependencias en nuestro proyecto.
-- Si es la primera vez, debemos ejecutar **"npm install"** en la terminal dentro del   directorio de nuestro proyecto, instalando asi todas las dependencias de nuestro proyecto.
-- Una vez instaladas todas las dependencias ya podremos abrir nuestra aplicación web de manera local desde Laragon.
+*El proyecto utiliza una arquitectura híbrida que combina la robusta herramienta web de Laravel con las capacidades especializadas de procesamiento de datos de Node.js.*
 
-Si como desarrollador web lo que quieres es realizar avances en el código o implementar nuevas funcionalidades a la aplicación web debes de tener en cuenta los siguientes requisitos:
+![Tabla con pila de tecnologías](/public/doc/PilaTecnologias.PNG)
 
-- Debes de tener instalado node js en tu ordenador.
-- Debes de saber que necesitaras varios paquetes de Laravel descargados.
-- Debes saber que se utiliza Vite para desplegar la aplicación web en local, debes de tenerlo instalado.
-- A continuación te dejo una lista con todas las **dependencias necesarias para su desarrollo:**
-    
-        "@tailwindcss/forms": "^0.5.2",
-        "@tailwindcss/vite": "^4.0.0",
-        "alpinejs": "^3.4.2",
-        "autoprefixer": "^10.4.2",
-        "axios": "^1.11.0",
-        "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^2.0.0",
-        "postcss": "^8.4.31",
-        "tailwindcss": "^3.1.0",
-        "vite": "^7.0.7"
+## Primeros pasos y instalación
+
+*Esta página proporciona una guía técnica completa para la configuración del proyecto CS2 Demo Analyzer en un entorno de desarrollo local. La aplicación aprovecha una pila híbrida que involucra un backend de Laravel 12 y un analizador binario basado en Node.js para procesar archivos .dem*
+
+### Requisitos previos
+
+Antes de comenzar la instalación, asegúrese de que su sistema cumple con los siguientes requisitos:
+
+![Tabla requerimientos](/public/doc/TablaRequerimientos.PNG)
+
+### Pasos de instalación
+
+**1. Configuración de clones y entornos**
+
+*Clone el repositorio y prepare la configuración del entorno. El proyecto incluye una setupGuión en composer.jsonEsto automatiza varios de estos pasos.*
+
+```bash
+git clone https://github.com/alejandrohuerga/AHFDWESProyectoFinalLaravel.git
+cd AHFDWESProyectoFinalLaravel
+cp .env.example .env
+```
+
+**2. Instalación de dependencia**
+
+*El proyecto requiere paquetes de PHP y JavaScript.*
+
+- **Dependencias de PHP:** Administrado a través de Compositor. Los paquetes clave incluyen laravel/framework y laravel/breeze **(composer.json 10-16)**.
+
+- **Dependencias de JavaScript:** Administrado a través de NPM. Incluye alpinejs, axios, y tailwindcss **(package.json 12-18)**.
+
+```bash
+composer install
+npm install
+```
+
+**3. Clave de la aplicación y base de datos**
+
+Genere la clave de cifrado de la aplicación y prepare la base de datos. De forma predeterminada, el entorno está configurado para usar SQLite **(env.example)**.
+
+```bash
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate --seed
+```
+
+**4. Compilación de archivos**
+
+El frontend utiliza Vite Para compilar CSS y JS. Los puntos de entrada están definidos en **(resources/js/app.js 1-3) (resources/css/app.css 1-3)**.
+
+```bash
+npm run build
+```
+
+**5. Mapeo de configuración**
+
+Esta tabla asigna los componentes del sistema a sus respectivas entidades de código para facilitar la navegación durante la configuración.
+
+![Tabla mapeo configuración](/public/doc/TablaMapeoConfiguración.PNG)
 
 
-*Esta información ha sido proporcionada a traves del archivo **package.json** de nuestro proyecto*
+
