@@ -90,3 +90,12 @@ Route::get('/descargar/{archivo}', function ($archivo) {
     }
     abort(404);
 })->name('doc.descargar');
+
+/**
+ * 
+ * 
+ */
+
+Route::get('/demo-xl', [App\Http\Controllers\DemoXLController::class, 'index'])->middleware(['auth', 'verified'])->name('demo-xl');
+Route::post('/demo-xl/chunk', [App\Http\Controllers\DemoXLController::class, 'recibirChunk'])->middleware(['auth', 'verified'])->name('demo-xl.chunk');
+Route::post('/demo-xl/ensamblar', [App\Http\Controllers\DemoXLController::class, 'ensamblarChunks'])->middleware(['auth', 'verified'])->name('demo-xl.ensamblar');
