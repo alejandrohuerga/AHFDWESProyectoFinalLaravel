@@ -28,11 +28,6 @@
                 <input id="remember_me" type="checkbox" class="rounded-md border-white/40 bg-white/20 text-gray-800 shadow-sm focus:ring-0 transition duration-150" name="remember">
                 <span class="ms-2 text-sm text-white/90 group-hover:text-white transition-colors">{{ __('Recordarme') }}</span>
             </label>
-            @if (Route::has('password.request'))
-                <a class="text-sm text-white/70 hover:text-white underline decoration-white/30 underline-offset-4 transition-colors" href="{{ route('password.request') }}">
-                    {{ __('¿Olvidaste tu clave?') }}
-                </a>
-            @endif
         </div>
         <div class="pt-2">
             <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-gray-900 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-200 transform active:scale-[0.98]">

@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -95,7 +96,7 @@ class DemoXLController extends Controller
             $mapName = 'Desconocido';
             $resultadoMapa = Process::path(storage_path('scripts/demoparser'))
                 ->timeout(30)
-                ->run("node metadate.cjs " . escapeshellarg($rutaAbsoluta));
+                ->run("/var/www/vhosts/alejandrohuefer.ieslossauces.es/.nodenv/shims/node metadate.cjs " . escapeshellarg($rutaAbsoluta));
 
             if ($resultadoMapa->successful()) {
                 $mapaJson = json_decode($resultadoMapa->output(), true);
@@ -106,7 +107,7 @@ class DemoXLController extends Controller
             // 5. Parser de estadísticas
             $resultado = Process::path(storage_path('scripts/demoparser'))
                 ->timeout(300)
-                ->run("node parse.cjs " . escapeshellarg($rutaAbsoluta));
+                ->run("/var/www/vhosts/alejandrohuefer.ieslossauces.es/.nodenv/shims/node parse.cjs " . escapeshellarg($rutaAbsoluta));
 
             // 6. Borrar el .dem
             if (file_exists($rutaAbsoluta)) {
