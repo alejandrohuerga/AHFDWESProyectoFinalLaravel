@@ -135,7 +135,7 @@ class DemoXLController extends Controller
             return response()->json([
                 'success'  => true,
                 'mensaje'  => '¡Análisis completado!',
-                'redirect' => route('analisis.index')
+                'redirect' => route('analisis')
             ]);
 
         } catch (\Exception $e) {
