@@ -26,9 +26,6 @@ class AnalisisController extends Controller
      */
     public function store(Request $request)
     {
-
-
-
         // 1. Validar la subida del archivo
         $request->validate([
             'demo_file' => 'required|file|max:100000', // ~100MB
