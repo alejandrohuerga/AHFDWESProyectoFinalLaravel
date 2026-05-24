@@ -17,6 +17,7 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
+    
     public function create(): View
     {
         return view('auth.register');
@@ -27,6 +28,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -38,7 +40,7 @@ class RegisteredUserController extends Controller
         $user = Usuario::create([
             'nombre' => $request->nombre,
             'correo' => $request->correo,
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
         ]);
 
         event(new Registered($user));

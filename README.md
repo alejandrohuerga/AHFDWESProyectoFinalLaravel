@@ -1,59 +1,79 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# EXPLOTADOR DE ARCHIVOS .DEM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este repositorio guarda todo un proyecto completo realizado con el framework de PHP Laravel el cual consiste en una aplicación web capaz de extraer la información de las estadísticas de las partidas de *Counter Strike profesionales de E-sports* de cada uno de los jugadores que participen en dicha partida.
 
-## About Laravel
+Este tipo de aplicaciones web tienen una *gran vista a futuro* debido a que cada vez más deportes tanto tradicionales como modernos estan implementando el análisis de datos para el estudio o preparación de los encuentros en los cuales participen en un futuro.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+La obtención de los archivos .dem de las partidas disputadas de manera profesional se pueden obtener de la web de **HLTV** (gratis e ilimitadas sus descargas).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Para la extracción de información de dichos archivos se ha utilizado una **libreria de JavaScript** la cual nos permitira mediante sus métodos y funciones de manera mas liviana y con menos tiempo de carga extraer dicha información y transferirla en formato **JSON** para su posterior presentación en forma de tabla.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Pila de tecnologías
 
-## Learning Laravel
+**A continuación tenemos la pila de tecnologías utilizadas para la elaboración de esta aplicación web:**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+*El proyecto utiliza una arquitectura híbrida que combina la robusta herramienta web de Laravel con las capacidades especializadas de procesamiento de datos de Node.js.*
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+![Tabla con pila de tecnologías](/public/doc/PilaTecnologias.PNG)
 
-## Laravel Sponsors
+## Primeros pasos y instalación
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+*Esta página proporciona una guía técnica completa para la configuración del proyecto CS2 Demo Analyzer en un entorno de desarrollo local. La aplicación aprovecha una pila híbrida que involucra un backend de Laravel 12 y un analizador binario basado en Node.js para procesar archivos .dem*
 
-### Premium Partners
+### Requisitos previos
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Antes de comenzar la instalación, asegúrese de que su sistema cumple con los siguientes requisitos:
 
-## Contributing
+![Tabla requerimientos](/public/doc/TablaRequerimientos.PNG)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Pasos de instalación
 
-## Code of Conduct
+**1. Configuración de clones y entornos**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+*Clone el repositorio y prepare la configuración del entorno. El proyecto incluye una setupGuión en composer.jsonEsto automatiza varios de estos pasos.*
 
-## Security Vulnerabilities
+```bash
+git clone https://github.com/alejandrohuerga/AHFDWESProyectoFinalLaravel.git
+cd AHFDWESProyectoFinalLaravel
+cp .env.example .env
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**2. Instalación de dependencia**
 
-## License
+*El proyecto requiere paquetes de PHP y JavaScript.*
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Dependencias de PHP:** Administrado a través de Compositor. Los paquetes clave incluyen laravel/framework y laravel/breeze **(composer.json 10-16)**.
+
+- **Dependencias de JavaScript:** Administrado a través de NPM. Incluye alpinejs, axios, y tailwindcss **(package.json 12-18)**.
+
+```bash
+composer install
+npm install
+```
+
+**3. Clave de la aplicación y base de datos**
+
+Genere la clave de cifrado de la aplicación y prepare la base de datos. De forma predeterminada, el entorno está configurado para usar SQLite **(env.example)**.
+
+```bash
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate --seed
+```
+
+**4. Compilación de archivos**
+
+El frontend utiliza Vite Para compilar CSS y JS. Los puntos de entrada están definidos en **(resources/js/app.js 1-3) (resources/css/app.css 1-3)**.
+
+```bash
+npm run build
+```
+
+**5. Mapeo de configuración**
+
+Esta tabla asigna los componentes del sistema a sus respectivas entidades de código para facilitar la navegación durante la configuración.
+
+![Tabla mapeo configuración](/public/doc/TablaMapeoConfiguración.PNG)
+
+
+
