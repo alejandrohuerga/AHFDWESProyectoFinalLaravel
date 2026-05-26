@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Departamento extends Model
 {
     // Clase que representa un Departamento en la base de datos.
-
     use HasFactory;
 
     // Nombre exacto de la tabla.

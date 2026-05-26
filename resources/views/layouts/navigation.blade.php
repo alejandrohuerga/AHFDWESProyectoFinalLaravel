@@ -28,6 +28,11 @@
                         {{ request()->routeIs('ayuda') ? 'border-cyan-500 !text-white drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]' : 'border-transparent' }}">
                         {{ __('Ayuda') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('demo-xl')" :active="request()->routeIs('demo-xl')"
+                        class="!text-white/70 hover:!text-white text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-300 border-b-2 py-11
+                        {{ request()->routeIs('demo-xl') ? 'border-cyan-500 !text-white drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]' : 'border-transparent' }}">
+                        {{ __('Demo XL') }}
+                    </x-nav-link>
                 </div>
             </div>
             <div class="hidden sm:flex sm:items-center sm:ms-6">
