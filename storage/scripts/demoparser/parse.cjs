@@ -30,7 +30,7 @@ try {
     const scoreboard = parseTicks(pathToDemo, fields, [gameEndTick]);
 
     // IMPORTANTE: Imprimimos SOLO el JSON. 
-    // No pongas console.log de "Cargando..." ni nada parecido.
+    
     process.stdout.write(JSON.stringify(scoreboard)); 
 
 } catch (e) {
