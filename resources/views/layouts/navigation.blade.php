@@ -18,11 +18,6 @@
                         {{ request()->routeIs('analisis') ? 'border-cyan-500 !text-white drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]' : 'border-transparent' }}">
                         {{ __('Análisis') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('jugadores')" :active="request()->routeIs('jugadores')"
-                        class="!text-white/70 hover:!text-white text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-300 border-b-2 py-11
-                        {{ request()->routeIs('jugadores') ? 'border-cyan-500 !text-white drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]' : 'border-transparent' }}">
-                        {{ __('Jugadores') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('ayuda')" :active="request()->routeIs('ayuda')"
                         class="!text-white/70 hover:!text-white text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-300 border-b-2 py-11
                         {{ request()->routeIs('ayuda') ? 'border-cyan-500 !text-white drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]' : 'border-transparent' }}">
