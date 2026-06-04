@@ -24,16 +24,16 @@
                 </span>
             </a>
             <!-- Documento 3 -->
-            {{-- <a href="{{ asset('doc/DiagramaCasosDeUso.pdf') }}" target="_blank" class="group flex flex-col items-center text-center transition-all duration-300">
+            <a href="{{ asset('doc/ManualdeUsuario.pdf') }}" target="_blank" class="group flex flex-col items-center text-center transition-all duration-300">
                 <div class="mb-4 p-6 bg-white/10 rounded-2xl group-hover:bg-white/20 group-hover:scale-110 transition-all border border-white/5 backdrop-blur-sm">
                     <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
                     </svg>
                 </div>
                 <span class="text-white/70 group-hover:text-white text-[10px] font-black uppercase tracking-[0.3em] transition-colors">
-                    {{ __('Diagrama Casos De Uso') }}
+                    {{ __('Manual de Usuario') }}
                 </span>
-            </a> --}}
+            </a>
         </div>
     </div>
 </x-app-layout>
