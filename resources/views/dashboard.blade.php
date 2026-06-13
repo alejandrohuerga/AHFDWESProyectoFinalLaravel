@@ -35,8 +35,11 @@
                             </label>
                         </div>
                         <button type="submit" id="btn-analyze" class="mt-6 px-10 py-3 bg-white text-black font-black rounded-xl hover:bg-gray-200 disabled:bg-white/10 disabled:text-white/20 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                            ANALIZAR PARTIDA
-                        </button>
+                                ANALIZAR PARTIDA
+                            </button>
+                            <a href="{{ route('demo.ejemplo') }}" class="mt-4 px-6 py-2.5 border border-white/20 text-white/70 font-bold rounded-xl hover:bg-white/10 hover:text-white hover:border-white/40 transition-all text-sm tracking-wide">
+                                DESCARGAR DEMO DE EJEMPLO
+                            </a>
                     </form>
                 </div>
             </div>

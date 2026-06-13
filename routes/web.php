@@ -57,6 +57,14 @@ Route::get('/analisis/{id}', [App\Http\Controllers\AnalisisController::class, 's
 
 Route::post('/demo/guardar', [DemoController::class, 'guardarArchivo'])->name('demo.guardar')->middleware(['auth', 'verified']); // Solo para usuarios autenticados y verificados, y se le asigna el nombre demo.guardar para poder acceder a ella desde otras partes de la aplicación.
 
+Route::get('/demo/ejemplo', function () {
+    $path = storage_path('app/private/demos/mi-demo.dem');
+    if (file_exists($path)) {
+        return response()->download($path, 'demo-ejemplo.dem');
+    }
+    abort(404);
+})->middleware(['auth', 'verified'])->name('demo.ejemplo');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
