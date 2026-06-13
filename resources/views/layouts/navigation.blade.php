@@ -3,7 +3,7 @@
         <div class="flex justify-between h-28"> 
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="group flex items-center gap-2">
+                    <a href="{{ route('demo-xl') }}" class="group flex items-center gap-2">
                         <img src="/images/logos/LogoBlancoSinFondo.png" alt="Parser CS2" class="h-20 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all duration-500">
                     </a>
                 </div>
