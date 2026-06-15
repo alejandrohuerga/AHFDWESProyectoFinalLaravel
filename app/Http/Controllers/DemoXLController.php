@@ -26,16 +26,17 @@ class DemoXLController extends Controller
      */
     public function recibirChunk(Request $request)
     {
+        $request->validate([
+            'chunk' => 'required|file',
+            'chunkIndex' => 'required|integer|min:0',
+            'uploadId' => 'required|string|alpha_dash|max:64',
+        ]);
+
         try {
             $chunk      = $request->file('chunk');
-            $chunkIndex = $request->input('chunkIndex');
+            $chunkIndex = (int) $request->input('chunkIndex');
             $uploadId   = $request->input('uploadId');
 
-            if (!$chunk) {
-                return response()->json(['error' => 'No se recibió el chunk'], 400);
-            }
-
-            // Storage::path() resuelve la ruta correcta en cualquier versión de Laravel
             $dirPath = Storage::path("chunks/{$uploadId}");
             if (!is_dir($dirPath)) {
                 mkdir($dirPath, 0775, true);
@@ -46,8 +47,8 @@ class DemoXLController extends Controller
             return response()->json(['ok' => true]);
 
         } catch (\Exception $e) {
-            \Log::error('ERROR recibirChunk: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('ERROR recibirChunk: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al procesar el chunk.'], 500);
         }
     }
 
@@ -58,6 +59,11 @@ class DemoXLController extends Controller
     {
         ini_set('memory_limit', '512M');
         set_time_limit(600);
+
+        $request->validate([
+            'uploadId' => 'required|string|alpha_dash|max:64',
+            'totalChunks' => 'required|integer|min:1|max:10000',
+        ]);
 
         $uploadId    = $request->input('uploadId');
         $totalChunks = (int) $request->input('totalChunks');
@@ -87,7 +93,7 @@ class DemoXLController extends Controller
             }
             fclose($destino);
 
-            \Log::info('✅ Archivo ensamblado: ' . $rutaAbsoluta);
+            Log::info('✅ Archivo ensamblado: ' . $rutaAbsoluta);
 
             // 3. Borrar chunks
             $this->borrarDirectorio($chunksPath);
@@ -96,7 +102,7 @@ class DemoXLController extends Controller
             $mapName = 'Desconocido';
             $resultadoMapa = Process::path(storage_path('scripts/demoparser'))
                 ->timeout(30)
-                ->run("/var/www/vhosts/alejandrohuefer.ieslossauces.es/.nodenv/shims/node metadate.cjs " . escapeshellarg($rutaAbsoluta));
+                ->run("node metadate.cjs " . escapeshellarg($rutaAbsoluta));
 
             if ($resultadoMapa->successful()) {
                 $mapaJson = json_decode($resultadoMapa->output(), true);
@@ -107,7 +113,7 @@ class DemoXLController extends Controller
             // 5. Parser de estadísticas
             $resultado = Process::path(storage_path('scripts/demoparser'))
                 ->timeout(300)
-                ->run("/var/www/vhosts/alejandrohuefer.ieslossauces.es/.nodenv/shims/node parse.cjs " . escapeshellarg($rutaAbsoluta));
+                ->run("node parse.cjs " . escapeshellarg($rutaAbsoluta));
 
             // 6. Borrar el .dem
             if (file_exists($rutaAbsoluta)) {
@@ -115,8 +121,9 @@ class DemoXLController extends Controller
             }
 
             if (!$resultado->successful()) {
+                Log::error('Error en el parser: ' . $resultado->errorOutput());
                 return response()->json([
-                    'error' => 'Error en el parser: ' . $resultado->errorOutput()
+                    'error' => 'Error al analizar el archivo demo.'
                 ], 500);
             }
 
@@ -140,8 +147,8 @@ class DemoXLController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('ERROR ensamblarChunks: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('ERROR ensamblarChunks: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al procesar el archivo.'], 500);
         }
     }
 

@@ -41,7 +41,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/analisis', [App\Http\Controllers\AnalisisController::class, 'seleccionarPartidosUsuario'])->middleware(['auth', 'verified'])->name('analisis'); 
 Route::get('/jugadores', [JugadoresController::class, 'consumirJSONjugadores']) ->middleware(['auth', 'verified']) ->name('jugadores');
-Route::get('/jugadores/{id}', [JugadoresController::class, 'show'])->name('jugadores.show');
+Route::get('/jugadores/{id}', [JugadoresController::class, 'show'])->middleware(['auth', 'verified'])->name('jugadores.show');
 
 Route::get('/analisis/{id}', [App\Http\Controllers\AnalisisController::class, 'show'])
     ->middleware(['auth', 'verified'])
@@ -92,12 +92,12 @@ Route::get('/ayuda',[App\Http\Controllers\AyudaController::class, 'index']) ->na
 use Illuminate\Support\Facades\Storage;
 
 Route::get('/descargar/{archivo}', function ($archivo) {
-    // Verificamos si el archivo existe en la carpeta storage/app/public/documentos
+    $archivo = basename($archivo);
     if (Storage::disk('public')->exists("doc/{$archivo}")) {
         return Storage::disk('public')->download("doc/{$archivo}");
     }
     abort(404);
-})->name('doc.descargar');
+})->where('archivo', '[A-Za-z0-9._-]+')->name('doc.descargar');
 
 /**
  * 
