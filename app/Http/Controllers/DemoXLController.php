@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Services\DemoParserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -16,6 +16,12 @@ use Illuminate\Support\Str;
  */
 class DemoXLController extends Controller
 {
+    private const XL_NODE_BINARY = '/var/www/vhosts/alejandrohuefer.ieslossauces.es/.nodenv/shims/node';
+
+    public function __construct(
+        protected DemoParserService $parser
+    ) {}
+
     public function index()
     {
         return view('demo-xl');
@@ -35,7 +41,6 @@ class DemoXLController extends Controller
                 return response()->json(['error' => 'No se recibió el chunk'], 400);
             }
 
-            // Storage::path() resuelve la ruta correcta en cualquier versión de Laravel
             $dirPath = Storage::path("chunks/{$uploadId}");
             if (!is_dir($dirPath)) {
                 mkdir($dirPath, 0775, true);
@@ -46,7 +51,7 @@ class DemoXLController extends Controller
             return response()->json(['ok' => true]);
 
         } catch (\Exception $e) {
-            \Log::error('ERROR recibirChunk: ' . $e->getMessage());
+            Log::error('ERROR recibirChunk: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -63,16 +68,13 @@ class DemoXLController extends Controller
         $totalChunks = (int) $request->input('totalChunks');
 
         try {
-            // 1. Crear carpeta demos si no existe
             $demosPath = Storage::path('demos');
             if (!is_dir($demosPath)) {
                 mkdir($demosPath, 0775, true);
             }
 
-            // 2. Ensamblar chunks en un único .dem
             $nombreArchivo = Str::random(40) . '.dem';
             $rutaAbsoluta  = str_replace('\\', '/', Storage::path("demos/{$nombreArchivo}"));
-            $rutaRelativa  = "demos/{$nombreArchivo}";
             $chunksPath    = Storage::path("chunks/{$uploadId}");
 
             $destino = fopen($rutaAbsoluta, 'wb');
@@ -87,51 +89,20 @@ class DemoXLController extends Controller
             }
             fclose($destino);
 
-            \Log::info('✅ Archivo ensamblado: ' . $rutaAbsoluta);
+            Log::info('Archivo ensamblado: ' . $rutaAbsoluta);
 
-            // 3. Borrar chunks
             $this->borrarDirectorio($chunksPath);
 
-            // 4. Parser del mapa
-            $mapName = 'Desconocido';
-            $resultadoMapa = Process::path(storage_path('scripts/demoparser'))
-                ->timeout(30)
-                ->run("/var/www/vhosts/alejandrohuefer.ieslossauces.es/.nodenv/shims/node metadate.cjs " . escapeshellarg($rutaAbsoluta));
+            $mapName      = $this->parser->parseMapName($rutaAbsoluta, self::XL_NODE_BINARY);
+            $estadisticas = $this->parser->parseStats($rutaAbsoluta, self::XL_NODE_BINARY, 300);
 
-            if ($resultadoMapa->successful()) {
-                $mapaJson = json_decode($resultadoMapa->output(), true);
-                $raw      = $mapaJson['map'] ?? '';
-                $mapName  = !empty($raw) ? ucfirst(preg_replace('/^[a-z]+_/', '', $raw)) : 'Desconocido';
-            }
+            $this->parser->cleanupFile($rutaAbsoluta);
 
-            // 5. Parser de estadísticas
-            $resultado = Process::path(storage_path('scripts/demoparser'))
-                ->timeout(300)
-                ->run("/var/www/vhosts/alejandrohuefer.ieslossauces.es/.nodenv/shims/node parse.cjs " . escapeshellarg($rutaAbsoluta));
-
-            // 6. Borrar el .dem
-            if (file_exists($rutaAbsoluta)) {
-                unlink($rutaAbsoluta);
-            }
-
-            if (!$resultado->successful()) {
-                return response()->json([
-                    'error' => 'Error en el parser: ' . $resultado->errorOutput()
-                ], 500);
-            }
-
-            $estadisticas = json_decode($resultado->output(), true);
-
-            if (empty($estadisticas)) {
+            if ($estadisticas === null) {
                 return response()->json(['error' => 'La demo no contenía datos válidos.'], 422);
             }
 
-            // 7. Guardar en base de datos
-            $analisis           = new \App\Models\Analisis();
-            $analisis->user_id  = Auth::id();
-            $analisis->map_name = $mapName;
-            $analisis->stats    = $estadisticas;
-            $analisis->save();
+            $this->parser->saveAnalisis(Auth::id(), $mapName, $estadisticas);
 
             return response()->json([
                 'success'  => true,
@@ -140,7 +111,7 @@ class DemoXLController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('ERROR ensamblarChunks: ' . $e->getMessage());
+            Log::error('ERROR ensamblarChunks: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

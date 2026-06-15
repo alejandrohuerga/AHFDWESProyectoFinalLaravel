@@ -39,7 +39,7 @@ Route::get('/dashboard', function () {
  * Solo para usuarios autenticados y verificados.
  */
 
-Route::get('/analisis', [App\Http\Controllers\AnalisisController::class, 'seleccionarPartidosUsuario'])->middleware(['auth', 'verified'])->name('analisis'); 
+Route::get('/analisis', [App\Http\Controllers\AnalisisController::class, 'index'])->middleware(['auth', 'verified'])->name('analisis'); 
 Route::get('/jugadores', [JugadoresController::class, 'consumirJSONjugadores']) ->middleware(['auth', 'verified']) ->name('jugadores');
 Route::get('/jugadores/{id}', [JugadoresController::class, 'show'])->name('jugadores.show');
 
