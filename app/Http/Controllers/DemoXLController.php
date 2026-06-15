@@ -35,7 +35,14 @@ class DemoXLController extends Controller
                 return response()->json(['error' => 'No se recibió el chunk'], 400);
             }
 
-            // Storage::path() resuelve la ruta correcta en cualquier versión de Laravel
+            if (!is_string($uploadId) || !preg_match('/^[a-f0-9\-]{36}$/i', $uploadId)) {
+                return response()->json(['error' => 'uploadId inválido'], 400);
+            }
+
+            if (!is_numeric($chunkIndex) || (int) $chunkIndex < 0) {
+                return response()->json(['error' => 'chunkIndex inválido'], 400);
+            }
+
             $dirPath = Storage::path("chunks/{$uploadId}");
             if (!is_dir($dirPath)) {
                 mkdir($dirPath, 0775, true);
@@ -46,7 +53,9 @@ class DemoXLController extends Controller
             return response()->json(['ok' => true]);
 
         } catch (\Exception $e) {
-            \Log::error('ERROR recibirChunk: ' . $e->getMessage());
+            Log::error('ERROR recibirChunk: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -62,6 +71,16 @@ class DemoXLController extends Controller
         $uploadId    = $request->input('uploadId');
         $totalChunks = (int) $request->input('totalChunks');
 
+        if (!is_string($uploadId) || !preg_match('/^[a-f0-9\-]{36}$/i', $uploadId)) {
+            return response()->json(['error' => 'uploadId inválido'], 400);
+        }
+
+        if ($totalChunks <= 0) {
+            return response()->json(['error' => 'totalChunks debe ser mayor que 0'], 400);
+        }
+
+        $destino = null;
+
         try {
             // 1. Crear carpeta demos si no existe
             $demosPath = Storage::path('demos');
@@ -76,18 +95,26 @@ class DemoXLController extends Controller
             $chunksPath    = Storage::path("chunks/{$uploadId}");
 
             $destino = fopen($rutaAbsoluta, 'wb');
+            if ($destino === false) {
+                throw new \RuntimeException("No se pudo crear el archivo ensamblado: {$rutaAbsoluta}");
+            }
+
             for ($i = 0; $i < $totalChunks; $i++) {
                 $chunkFile = "{$chunksPath}/chunk_{$i}";
                 if (!file_exists($chunkFile)) {
                     throw new \Exception("Chunk {$i} no encontrado en: {$chunkFile}");
                 }
                 $handle = fopen($chunkFile, 'rb');
+                if ($handle === false) {
+                    throw new \RuntimeException("No se pudo leer el chunk: {$chunkFile}");
+                }
                 stream_copy_to_stream($handle, $destino);
                 fclose($handle);
             }
             fclose($destino);
+            $destino = null;
 
-            \Log::info('✅ Archivo ensamblado: ' . $rutaAbsoluta);
+            Log::info('Archivo ensamblado: ' . $rutaAbsoluta);
 
             // 3. Borrar chunks
             $this->borrarDirectorio($chunksPath);
@@ -100,8 +127,14 @@ class DemoXLController extends Controller
 
             if ($resultadoMapa->successful()) {
                 $mapaJson = json_decode($resultadoMapa->output(), true);
-                $raw      = $mapaJson['map'] ?? '';
-                $mapName  = !empty($raw) ? ucfirst(preg_replace('/^[a-z]+_/', '', $raw)) : 'Desconocido';
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    Log::warning('JSON del parser de mapa inválido (XL): ' . json_last_error_msg());
+                } else {
+                    $raw      = $mapaJson['map'] ?? '';
+                    $mapName  = !empty($raw) ? ucfirst(preg_replace('/^[a-z]+_/', '', $raw)) : 'Desconocido';
+                }
+            } else {
+                Log::warning('Parser de mapa falló (XL): ' . $resultadoMapa->errorOutput());
             }
 
             // 5. Parser de estadísticas
@@ -115,12 +148,20 @@ class DemoXLController extends Controller
             }
 
             if (!$resultado->successful()) {
+                Log::error('Parser de estadísticas falló (XL): ' . $resultado->errorOutput());
                 return response()->json([
                     'error' => 'Error en el parser: ' . $resultado->errorOutput()
                 ], 500);
             }
 
             $estadisticas = json_decode($resultado->output(), true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error('JSON de estadísticas inválido (XL): ' . json_last_error_msg(), [
+                    'raw_output_preview' => substr($resultado->output(), 0, 500),
+                ]);
+                return response()->json(['error' => 'El parser devolvió datos inválidos.'], 500);
+            }
 
             if (empty($estadisticas)) {
                 return response()->json(['error' => 'La demo no contenía datos válidos.'], 422);
@@ -140,7 +181,12 @@ class DemoXLController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('ERROR ensamblarChunks: ' . $e->getMessage());
+            if (is_resource($destino)) {
+                fclose($destino);
+            }
+            Log::error('ERROR ensamblarChunks: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

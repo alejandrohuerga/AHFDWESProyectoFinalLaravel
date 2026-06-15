@@ -97,7 +97,22 @@ document.addEventListener('DOMContentLoaded', function () {
             actualizarBarra(80, 'ANALIZANDO DEMO...', 'Esto puede tardar varios minutos');
 
             const resEnsamblar = await fetch(ENSAMBLAR_URL, { method: 'POST', body: formEnsamblar });
-            const data = await resEnsamblar.json();
+
+            if (!resEnsamblar.ok) {
+                let errorMsg = `Error del servidor (${resEnsamblar.status})`;
+                try {
+                    const errData = await resEnsamblar.json();
+                    if (errData.error) errorMsg = errData.error;
+                } catch (_) {}
+                throw new Error(errorMsg);
+            }
+
+            let data;
+            try {
+                data = await resEnsamblar.json();
+            } catch (_) {
+                throw new Error('Respuesta del servidor no es JSON válido.');
+            }
 
             if (data.error) throw new Error(data.error);
 

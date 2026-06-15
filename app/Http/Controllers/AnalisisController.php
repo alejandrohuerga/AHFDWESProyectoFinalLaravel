@@ -6,6 +6,7 @@ use App\Models\Analisis;
 use App\Models\Demos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -50,6 +51,13 @@ class AnalisisController extends Controller
             // 4. Decodificar el JSON que escupe el script de Node
             $datosJson = json_decode($result->output(), true);
 
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error('Error al decodificar JSON del parser: ' . json_last_error_msg(), [
+                    'raw_output_preview' => substr($result->output(), 0, 500),
+                ]);
+                return back()->with('error', 'El parser devolvió un JSON inválido.');
+            }
+
             if (empty($datosJson)) {
                 return back()->with('error', 'El parser devolvió un JSON vacío.');
             }
@@ -69,6 +77,9 @@ class AnalisisController extends Controller
             return redirect()->route('analisis.index')->with('success', '¡Análisis completado y guardado!');
 
         } catch (\Exception $e) {
+            Log::error('Error en AnalisisController@store: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
             return back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
         }
     }
@@ -76,7 +87,12 @@ class AnalisisController extends Controller
     public function show($id)
     {
         $analisis = Analisis::findOrFail($id);
-        $stats = collect($analisis->stats)->sortByDesc('score')->values();
+
+        if ((int) $analisis->user_id !== (int) Auth::id()) {
+            abort(403, 'No tienes permiso para ver este análisis.');
+        }
+
+        $stats = collect($analisis->stats ?? [])->sortByDesc('score')->values();
         return view('analisis.show', compact('analisis', 'stats'));
     }
 
