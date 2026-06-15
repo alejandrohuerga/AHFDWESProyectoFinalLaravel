@@ -22,7 +22,7 @@ class DemoController extends Controller
     public function guardarArchivo(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|max:900000',
+            'file' => 'required|file|max:900000|mimes:dem,bin',
         ]);
 
         try {
@@ -41,7 +41,8 @@ class DemoController extends Controller
                     Storage::delete($rutaRelativa);
                 }
                 $errorTecnico = $resultado->errorOutput();
-                return back()->with('error', "Error en el análisis técnico: " . ($errorTecnico ?: "Tiempo de espera agotado o salida vacía."));
+                \Illuminate\Support\Facades\Log::error('Error en análisis técnico: ' . $errorTecnico);
+                return back()->with('error', 'Error en el análisis técnico. Compruebe que el archivo .dem es válido.');
             }
 
             // 3. Ejecutamos el parser del mapa (antes de borrar el .dem)
@@ -83,7 +84,8 @@ class DemoController extends Controller
             if (isset($rutaRelativa) && Storage::exists($rutaRelativa)) {
                 Storage::delete($rutaRelativa);
             }
-            return back()->with('error', 'Error crítico en el servidor: ' . $ex->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error crítico en DemoController: ' . $ex->getMessage());
+            return back()->with('error', 'Error crítico en el servidor. Contacte al administrador.');
         }
     }
 

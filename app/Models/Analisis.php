@@ -21,6 +21,12 @@ class Analisis extends Model
      * una tupla de base de datos y asi poder mostrarla comodamente en la vista.
      */
     
+    protected $fillable = [
+        'user_id',
+        'map_name',
+        'stats',
+    ];
+
     protected $casts = [
         'stats' => 'array',
     ];

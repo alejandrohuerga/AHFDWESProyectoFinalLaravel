@@ -44,7 +44,8 @@ class AnalisisController extends Controller
             $result = Process::run("node \"$scriptPath\" \"$fullPath\"");
 
             if (!$result->successful()) {
-                return back()->with('error', 'Error en el parser: ' . $result->errorOutput());
+                \Illuminate\Support\Facades\Log::error('Error en el parser: ' . $result->errorOutput());
+                return back()->with('error', 'Error al procesar el archivo demo.');
             }
 
             // 4. Decodificar el JSON que escupe el script de Node
@@ -69,13 +70,16 @@ class AnalisisController extends Controller
             return redirect()->route('analisis.index')->with('success', '¡Análisis completado y guardado!');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error en AnalisisController@store: ' . $e->getMessage());
+            return back()->with('error', 'Ocurrió un error al procesar el análisis.');
         }
     }
 
     public function show($id)
     {
-        $analisis = Analisis::findOrFail($id);
+        $analisis = Analisis::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
         $stats = collect($analisis->stats)->sortByDesc('score')->values();
         return view('analisis.show', compact('analisis', 'stats'));
     }

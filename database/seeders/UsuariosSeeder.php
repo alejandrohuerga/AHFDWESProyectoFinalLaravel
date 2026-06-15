@@ -6,6 +6,7 @@ use App\Models\Usuario;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UsuariosSeeder extends Seeder
 {
@@ -25,13 +26,13 @@ class UsuariosSeeder extends Seeder
         Usuario::insert([
             [
                 'nombre' => 'Administrador',
-                'correo' => 'alejandrohuerga.dev@gmail.com',
-                'password' => Hash::make('paso1234')
+                'correo' => env('ADMIN_EMAIL', 'admin@example.com'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', Str::random(32)))
             ],
             [
                 'nombre' => 'Administrador2',
-                'correo' => 'whoishuergale@gmail.com',
-                'password' => Hash::make('paso1234')
+                'correo' => env('ADMIN2_EMAIL', 'admin2@example.com'),
+                'password' => Hash::make(env('ADMIN2_PASSWORD', Str::random(32)))
             ]
         ]);
     }
