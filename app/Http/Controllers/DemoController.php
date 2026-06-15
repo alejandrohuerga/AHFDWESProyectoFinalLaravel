@@ -6,6 +6,7 @@ use App\Models\Demos;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -51,14 +52,26 @@ class DemoController extends Controller
 
             $mapName = 'Desconocido';
             if ($resultadoMapa->successful()) {
-                // Formateamos la salida con el nombre eliminando primeras siglas.
                 $mapaJson = json_decode($resultadoMapa->output(), true);
-                $raw = $mapaJson['map'] ?? '';
-                $mapName = !empty($raw) ? ucfirst(preg_replace('/^[a-z]+_/', '', $raw)) : 'Desconocido';
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    Log::warning('JSON del parser de mapa inválido: ' . json_last_error_msg());
+                } else {
+                    $raw = $mapaJson['map'] ?? '';
+                    $mapName = !empty($raw) ? ucfirst(preg_replace('/^[a-z]+_/', '', $raw)) : 'Desconocido';
+                }
+            } else {
+                Log::warning('Parser de mapa falló: ' . $resultadoMapa->errorOutput());
             }
 
             // 4. Convertimos las estadísticas
             $estadisticas = json_decode($resultado->output(), true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error('JSON de estadísticas inválido: ' . json_last_error_msg(), [
+                    'raw_output_preview' => substr($resultado->output(), 0, 500),
+                ]);
+                return back()->with('error', 'El parser devolvió datos inválidos.');
+            }
 
             // 5. Borramos el .dem ahora que ya tenemos todo lo que necesitamos
             if (Storage::exists($rutaRelativa)) {
@@ -80,6 +93,9 @@ class DemoController extends Controller
                          ->with('stats', $estadisticas);
 
         } catch (\Exception $ex) {
+            Log::error('Error crítico en DemoController@guardarArchivo: ' . $ex->getMessage(), [
+                'trace' => $ex->getTraceAsString(),
+            ]);
             if (isset($rutaRelativa) && Storage::exists($rutaRelativa)) {
                 Storage::delete($rutaRelativa);
             }

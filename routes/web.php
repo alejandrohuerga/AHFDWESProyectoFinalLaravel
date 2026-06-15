@@ -92,7 +92,10 @@ Route::get('/ayuda',[App\Http\Controllers\AyudaController::class, 'index']) ->na
 use Illuminate\Support\Facades\Storage;
 
 Route::get('/descargar/{archivo}', function ($archivo) {
-    // Verificamos si el archivo existe en la carpeta storage/app/public/documentos
+    if (str_contains($archivo, '..') || str_contains($archivo, '/') || str_contains($archivo, '\\')) {
+        abort(400, 'Nombre de archivo no válido.');
+    }
+
     if (Storage::disk('public')->exists("doc/{$archivo}")) {
         return Storage::disk('public')->download("doc/{$archivo}");
     }
